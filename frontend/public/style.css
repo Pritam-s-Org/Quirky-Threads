@@ -1,0 +1,44 @@
+*{
+  margin: 0;
+  padding: 0;
+}
+.fixed-height {
+  height: 50vh; /* Set your desired height */
+  overflow: hidden; /* Optionally, to handle overflow content */
+}
+
+.caroousel-caption {
+  position: absolute;
+  width: 100%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: #00000040;
+}
+
+.caroousel-description {
+  position:relative;
+  text-align: end;
+  width: 40%;
+  left: 0;
+  top: 0;
+  color:black
+}
+
+.right-icon {
+  position: absolute;
+  right: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+}
+
+.pointer-disabled {
+  pointer-events: none;
+}
+.pointer-enabled {
+  pointer-events: auto;
+}
+
