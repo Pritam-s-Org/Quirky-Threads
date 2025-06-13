@@ -3,6 +3,13 @@ import { ORDERS_URL, PAYPAL_URL } from "../constants"
 
 export const ordersApiSlices = apiSlice.injectEndpoints({
   endpoints: (builder)=>({
+    verifyOrderStock: builder.mutation({
+      query: (cartItems)=>({
+        url: `${ORDERS_URL}/cartVerification`,
+        method: "POST",
+        body: {cartItems}
+      })
+    }),
     createOrder: builder.mutation({
       query: (order)=>({
         url: ORDERS_URL,
@@ -57,4 +64,4 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
   })
 })
 
-export const { useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetPayPalClientIdQuery, useGetMyOrdersQuery, useGetOrdersQuery, useDeliverOrderMutation } = ordersApiSlices
+export const { useVerifyOrderStockMutation, useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetPayPalClientIdQuery, useGetMyOrdersQuery, useGetOrdersQuery, useDeliverOrderMutation } = ordersApiSlices

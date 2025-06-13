@@ -30,14 +30,19 @@ const ProductScreen = () => {
 
   useEffect(()=>{
     setSelectedVariant(product?.variants[0])
-  }, [product, productId])
+    setSize(product?.variants[0]?.sizes[0]?.size)
+  }, [product, productId, selectedVariant])
 
   useEffect(()=>{
     setCountInStock(selectedVariant?.sizes?.find(item => item.size === size)?.stock)
   }, [selectedVariant, size])
 
   const addToCartHandler = () => {
-    dispatch(addToCart({ ...product, size }))
+    dispatch(addToCart({ 
+      ...product, 
+      variants: {...selectedVariant, sizes : selectedVariant?.sizes?.find(item => item.size === size)},
+      keyId: product._id + selectedVariant?.sizes?.find(item => item.size === size)._id,
+      qty:1 }))
     navigate("/cart")
   }
 
@@ -158,11 +163,11 @@ const ProductScreen = () => {
                     {countInStock?
                       <Row>
                         <Button
-                          className="btn btn-dark"
+                          className="btn btn-warning"
                           type="button"
                           disabled={!countInStock}
                           onClick={addToCartHandler}
-                        >Add to Cart</Button>
+                        ><b>Add to Cart</b></Button>
                       </Row> :
                       <Message>Please wait for the next stock update</Message>
                     }
