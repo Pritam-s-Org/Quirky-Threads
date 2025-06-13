@@ -32,14 +32,14 @@ const Header = () => {
 
   return (
     <header>
-      <Navbar bg="secondary" variant="secondary" expand="md" className="p-2 m-0" collapseOnSelect>
+      <Navbar bg="warning" variant="warning" expand="md" className="p-2 m-0" collapseOnSelect>
         <Container>
           <LinkContainer to="/">
             <Navbar.Brand>
-              <img src={logo} alt="Quirky Threads Brand" height="70px" className="brand navbar-brand" />
+              <img src={logo} alt="Quirky Threads Brand" height="60px" className="brand navbar-brand" />
             </Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="btn-danger" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <SearchBox />
@@ -47,9 +47,11 @@ const Header = () => {
                 <Nav.Link>
                   <FaShoppingCart /> Cart
                   {cartItems.length > 0 && (
-                    <Badge pill bg="success"
+                    <Badge pill bg="danger"
                       style={{ marginLeft: "5px" }}>
-                      {cartItems.reduce((a, c) => a + c.qty, 0)}
+                      {/* {cartItems.reduce((a, c) => a + c.qty, 0)} */}
+                      {cartItems.length}
+                      {console.log(cartItems.length)}
                     </Badge>
                   )}
                 </Nav.Link>

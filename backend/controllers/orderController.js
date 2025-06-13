@@ -3,6 +3,75 @@ import asyncHandler from "../middleware/asyncHandler.js";
 import Order from "../models/oderModel.js";
 import Product from "../models/productModel.js";
 import razorpay from "../config/razorpay.js";
+import mongoose from "mongoose";
+
+const verifyOrderStock = async (req, res) => {
+  const orderItems = req.body.cartItems; // Expected: [{ keyId, qty }]
+  try {
+    const insufficientItems = [];
+
+    for (const { keyId, qty } of orderItems) {
+      const productId = keyId.substring(0, 24);
+      const sizeId = keyId.substring(24);
+
+      const product = await Product.findById(productId);
+
+      if (!product) {
+        insufficientItems.push({
+          keyId,
+          reason: "Product not found",
+        });
+        continue;
+      }
+
+      // Search size within variants
+      let sizeMatch = null;
+
+      for (const variant of product.variants) {
+        const foundSize = variant.sizes.find(
+          (size) => size._id.toString() === sizeId
+        );
+        if (foundSize) {
+          sizeMatch = foundSize;
+          break;
+        }
+      }
+
+      if (!sizeMatch) {
+        insufficientItems.push({
+          keyId,
+          reason: "Size not found",
+        });
+        continue;
+      }
+
+      if (sizeMatch.stock < qty) {
+        insufficientItems.push({
+          keyId,
+          availableStock: sizeMatch.stock,
+          reason: "Insufficient stock",
+        });
+      }
+    }
+
+    if (insufficientItems.length) {
+      return res.status(200).json({
+        success: false,
+        message: "Unable to place order.",
+        issues: insufficientItems,
+      });
+    }
+
+    return res.status(200).json({ success: true });
+
+  } catch (error) {
+    console.error("Stock verification error:", error);
+    return res.status(500).json({
+      success: false,
+      message: "Internal server error",
+    });
+  }
+};
 
 //@desc   Create a new order
 //@route  POST /api/orders
@@ -26,6 +95,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			orderItems: orderItems.map((i) => ({
 				...i,
 				product: i._id,
+				image: i.variants.image,
+				variantColor: i.variants.variantName,
+				size: i.variants.sizes.size,
 				_id: undefined,
 			})),
 			user: req.user._id,
@@ -35,6 +107,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			taxPrice,
 			shippingPrice,
 			totalPrice,
+			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`
 		});
 
 		try {
@@ -243,6 +316,7 @@ const getOrders = asyncHandler(async (req, res) => {
 });
 
 export {
+	verifyOrderStock,
 	addOrderItems,
 	verifyPayment,
 	getMyOrders,

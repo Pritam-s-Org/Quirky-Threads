@@ -18,7 +18,7 @@ const reviewSchema = mongoose.Schema(
 
 const sizeSchema = new mongoose.Schema({
 	size: { type: String, required: true, default: "M" }, // e.g., 'S', 'M', 'L'
-	stock: { type: Number, required: true, default: 0 },
+	stock: { type: Number, required: true, default: 0, min: 0 },
 });
 
 const variantSchema = new mongoose.Schema({

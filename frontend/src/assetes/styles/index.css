@@ -49,11 +49,11 @@ table th {
   left: 0;
   right: 0;
   bottom: 0;
-  background: #00000080
+  background: #61560780
 }
 
 .carousel-div{
-  background-color: #00eeff09;
+  background-color: #e1ff0029;
 }
 
 .carousel-item {
@@ -76,4 +76,18 @@ table th {
 .link-category{
   text-align: center;
   width: 100%;
+}
+
+.custom-navbar {
+  background-color: linear-gradient(90deg, #be6500, #ffb048);
+  color: white;
+}
+
+.custom-navbar .navbar-brand,
+.custom-navbar .nav-link {
+  color: white;
+}
+
+.custom-navbar .nav-link:hover {
+  color: #ffd700; /* Example: Gold on hover */
 }
