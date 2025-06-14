@@ -95,6 +95,7 @@ const ForgotPassword = () => {
               required
               onChange={(e) => !isverified && setEmail(e.target.value)}
               readOnly={isverified}
+              className={isverified && "border-success"}
             />
 					</Form.Group>
           <Form.Group>
@@ -120,7 +121,7 @@ const ForgotPassword = () => {
 					{sentOtp ? (
 						<Button
 							type="submit"
-							variant="dark"
+							variant="warning"
 							className="mt-2"
 							disabled={isLoading}
               onClick={async (e) => {handleVerify(inputRefs.current.map(ref => ref.value).join(''))}}
@@ -129,7 +130,7 @@ const ForgotPassword = () => {
 						</Button>
 					) : (
 						<Button
-							className="btn-outline-warning mt-2 border-0"
+							className="btn-outline-warning mt-4 border-0"
 							onClick={async () => handleSendOtp()}
 							disabled={ !email || !email.includes("@") || !email.includes(".") || isverified ||sendingOtp}
 						>

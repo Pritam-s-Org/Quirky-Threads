@@ -91,7 +91,7 @@ const OrderScreen = () => {
         (
           <>
             <Meta title={`Quirky Threads | Order-${order._id}`} />
-            <h1>Order: {order._id}</h1>
+            <h1>Order Id: {order.orderId}</h1>
             <Row>
               <Col md={8}>
                 <ListGroup>
@@ -126,9 +126,13 @@ const OrderScreen = () => {
                     {order.orderItems.map((item, index) => (
                       <ListGroup.Item key={index}>
                         <Row>
-                          <Col md={1}><Image src={item.image} alt={`${item.name}-${item.variant}`} fluid rounded /></Col>
-                          <Col>
-                            <Link to={`/product/${item.product}`}>{item.name} ({item.variant})</Link>
+                          <Col md={1}><Image src={item.image} alt={`${item.name}-${item.variantColor}`} fluid rounded /></Col>
+                          <Col md={5}>
+                            <Link to={`/product/${item.product}`}>{item.name} ({item.variantColor})</Link>
+                            <h6>Size : {item.size}</h6>
+                          </Col>
+                          <Col md={2}>
+                            <h5>{item.qty} Unit</h5>
                           </Col>
                           <Col md={4}>
                             ₹{item.price} × {item.qty} = ₹{item.qty * item.price}
@@ -150,12 +154,17 @@ const OrderScreen = () => {
                       </Row>
                       <Row>
                         <Col>Shipping</Col>
-                        <Col>₹{order.shippingPrice}</Col>
+                        <Col>+ ₹{order.shippingPrice}</Col>
                       </Row>
+                      {order.secureTransactionFee > 0 && <Row>
+                        <Col>Transaction Fee</Col>
+                        <Col>+ ₹{order.secureTransactionFee}</Col>
+                      </Row>}
                       <Row>
-                        <Col>Tax</Col>
-                        <Col>₹{order.taxPrice}</Col>
+                        <Col>Discount</Col>
+                        <Col>- ₹{order.discount}</Col>
                       </Row>
+                      <hr />
                       <Row>
                         <Col>Total</Col>
                         <Col>₹{order.totalPrice}</Col>

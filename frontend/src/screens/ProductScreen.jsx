@@ -111,7 +111,11 @@ const ProductScreen = () => {
                   <Row className="my-2">
                     {product.variants.map( variant =>
                       <Row className="d-grid gap-2 col-4 mx-auto">
-                        <Button style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} onClick={()=>setSelectedVariant(variant)}>
+                        <Button 
+                          style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} 
+                          onClick={()=>setSelectedVariant(variant)}
+                          className={`${variant._id === selectedVariant?._id? "border-3 shadow-none" : "border-0 shadow"} text-truncate`}
+                        >
                           {variant._id === selectedVariant?._id ? (<b>{variant.variantName}</b>): (variant.variantName)}
                         </Button>
                       </Row>

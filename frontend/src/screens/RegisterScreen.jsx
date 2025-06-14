@@ -188,7 +188,7 @@ const RegisterScreen = () => {
               onChange={(e) => setConfirmPassword(e.target.value)}
             />
             <h6
-              hidden={confirmPassword === password  || confirmPassword === ""}
+              hidden={confirmPassword === password.slice(0,confirmPassword.length)  || confirmPassword === ""}
               variant="danger"
               style={{color: "red"}}
             >Your Password isn't matching with entered password</h6>

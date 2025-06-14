@@ -215,7 +215,7 @@ const ProfileScreen = () => {
                     <td>{++index}.</td>
                     <td><AvatarGroup avatars={order.orderItems} size={35} /></td>
                     <td>
-                      <Link className="text-decoration-none" to={`/order/${order._id}`}><span title={order._id}>...{order._id.slice(-9)}</span></Link>
+                      <Link className="text-decoration-none" to={`/order/${order._id}`}><span title={order._id}>{order.orderId}</span></Link>
                     </td>
                     <td>{dateFormatting(order.createdAt).substring(0, 10)}</td>
                     <td className="fw-semibold" style={{color: "black"}}>{order.totalPrice}</td>

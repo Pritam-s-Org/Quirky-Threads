@@ -6,71 +6,69 @@ import razorpay from "../config/razorpay.js";
 import mongoose from "mongoose";
 
 const verifyOrderStock = async (req, res) => {
-  const orderItems = req.body.cartItems; // Expected: [{ keyId, qty }]
-  try {
-    const insufficientItems = [];
+	const orderItems = req.body.cartItems; // Expected: [{ keyId, qty }]
+	try {
+		const insufficientItems = [];
 
-    for (const { keyId, qty } of orderItems) {
-      const productId = keyId.substring(0, 24);
-      const sizeId = keyId.substring(24);
+		for (const { keyId, qty } of orderItems) {
+			const productId = keyId.substring(0, 24);
+			const sizeId = keyId.substring(24);
 
-      const product = await Product.findById(productId);
+			const product = await Product.findById(productId);
 
-      if (!product) {
-        insufficientItems.push({
-          keyId,
-          reason: "Product not found",
-        });
-        continue;
-      }
+			if (!product) {
+				insufficientItems.push({
+					keyId,
+					reason: "Product not found",
+				});
+				continue;
+			}
 
-      // Search size within variants
-      let sizeMatch = null;
+			let sizeMatch = null;
 
-      for (const variant of product.variants) {
-        const foundSize = variant.sizes.find(
-          (size) => size._id.toString() === sizeId
-        );
-        if (foundSize) {
-          sizeMatch = foundSize;
-          break;
-        }
-      }
+			for (const variant of product.variants) {
+				const foundSize = variant.sizes.find(
+					(size) => size._id.toString() === sizeId
+				);
+				if (foundSize) {
+					sizeMatch = foundSize;
+					break;
+				}
+			}
 
-      if (!sizeMatch) {
-        insufficientItems.push({
-          keyId,
-          reason: "Size not found",
-        });
-        continue;
-      }
+			if (!sizeMatch) {
+				insufficientItems.push({
+					keyId,
+					reason: "Size not found",
+				});
+				continue;
+			}
 
-      if (sizeMatch.stock < qty) {
-        insufficientItems.push({
-          keyId,
-          availableStock: sizeMatch.stock,
-          reason: "Insufficient stock",
-        });
-      }
-    }
+			if (sizeMatch.stock < qty) {
+				insufficientItems.push({
+					keyId,
+					availableStock: sizeMatch.stock,
+					reason: "Insufficient stock",
+				});
+			}
+		}
 
-    if (insufficientItems.length) {
-      return res.status(200).json({
-        success: false,
-        message: "Unable to place order.",
-        issues: insufficientItems,
-      });
-    }
+		if (insufficientItems.length) {
+			return res.status(200).json({
+				success: false,
+				message: "Unable to place order.",
+				issues: insufficientItems,
+			});
+		}
 
-    return res.status(200).json({ success: true });
-
-  } catch (error) {
-    console.error("Stock verification error:", error);
-    return res.status(500).json({
-      success: false,
-      message: "Internal server error",
-    });
-  }
+		return res.status(200).json({ success: true });
+	} catch (error) {
+		console.error("Stock verification error:", error);
+		return res.status(500).json({
+			success: false,
+			message: "Internal server error",
+		});
+	}
 };
 
 //@desc   Create a new order
@@ -109,7 +107,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			shippingPrice,
 			discount,
 			totalPrice,
-			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`
+			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
 		});
 
 		try {
@@ -132,7 +130,12 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			await Promise.all(
 				orderItems.map(async (item) => {
 					const product = await Product.findById(item._id);
-					product.countInStock -= item.qty;
+					if (!product) throw new Error("Product not found.");
+					const variant = product.variants.find((v) => v.variantName === item.variants.variantName);
+					if (!variant) throw new Error("Variant could not found.");;
+					const sizeObj = variant.sizes.find((s) => s.size === item.variants.sizes.size);
+					if (!sizeObj) throw new Error("Size counld not found.");;
+					sizeObj.stock -= item.qty;
 					await product.save();
 				})
 			);
@@ -194,7 +197,9 @@ const verifyPayment = asyncHandler(async (req, res) => {
 		}
 
 		const order = await Order.findById(orderId);
-		const paymentResponse = await razorpay.orders.fetchPayments(razorpay_order_id);
+		const paymentResponse = await razorpay.orders.fetchPayments(
+			razorpay_order_id
+		);
 
 		if (
 			!paymentResponse ||

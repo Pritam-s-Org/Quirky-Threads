@@ -186,18 +186,18 @@ const PlaceOrdersScreen = () => {
 									<Col className="text-end">+ ₹{cart.shippingPrice}</Col>
 								</Row>
 							</ListGroup.Item>
-							<ListGroup.Item>
+							{cart.paymentMethod === "Razorpay" && <ListGroup.Item>
 								<Row>
 									<Col>Secure Transaction Fee:</Col>
 									<Col className="text-end">+ ₹{cart.secureTransactionFee}</Col>
 								</Row>
-							</ListGroup.Item>
-							{cart.paymentMethod === "Razorpay" && <ListGroup.Item>
+							</ListGroup.Item>}
+							<ListGroup.Item>
 								<Row>
 									<Col>Discount:</Col>
 									<Col className="text-end">- ₹{cart.discount}</Col>
 								</Row>
-							</ListGroup.Item>}
+							</ListGroup.Item>
 							<ListGroup.Item>
 								<Row>
 									<Col>Total:</Col>

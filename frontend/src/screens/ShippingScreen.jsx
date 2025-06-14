@@ -56,7 +56,7 @@ const ShippingScreen = () => {
         <Collapse in={open}>
         <Col id="basic-details-section">
           <Form.Group controlId="shippingName" className="my-2">
-            <Form.Label>Name</Form.Label>
+            <Form.Label>Name*</Form.Label>
             <Form.Control
               type="text"
               placeholder="This name will appear on the order"
@@ -66,7 +66,7 @@ const ShippingScreen = () => {
             ></Form.Control>
           </Form.Group>
           <Form.Group controlId="shippingEmail" className="my-2">
-            <Form.Label>Email</Form.Label>
+            <Form.Label>Email*</Form.Label>
             <Form.Control
               type="email"
               placeholder="This name will appear on the order"
@@ -77,7 +77,7 @@ const ShippingScreen = () => {
             <p style={{color: "navy", fontSize: "0.8rem"}}>Order confirmation mail will be sent to this mail id</p>
           </Form.Group>
           <Form.Group controlId="shippingPhoneNumber" className="my-2">
-            <Form.Label>Mobile</Form.Label>
+            <Form.Label>Mobile*</Form.Label>
             <Form.Control
               type="text"
               placeholder="This name will appear on the order"
@@ -91,7 +91,7 @@ const ShippingScreen = () => {
         </Col>
       </Collapse>
         <Form.Group controlId="address" className="my-2">
-          <Form.Label>Address</Form.Label>
+          <Form.Label>Address/Street name*</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter shipping address"
@@ -101,7 +101,7 @@ const ShippingScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId="city" className="my-2">
-          <Form.Label>City</Form.Label>
+          <Form.Label>City*</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter shipping city"
@@ -111,7 +111,7 @@ const ShippingScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId="district" className="my-2">
-          <Form.Label>District</Form.Label>
+          <Form.Label>District*</Form.Label>
           <Form.Control
             as="select"
             value={district}
@@ -139,7 +139,7 @@ const ShippingScreen = () => {
           </Form.Control>
         </Form.Group>
         <Form.Group controlId="pinCode" className="my-2">
-          <Form.Label>Pin Code</Form.Label>
+          <Form.Label>Pin Code*</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter your area postal code"
@@ -149,7 +149,7 @@ const ShippingScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId="landmark" className="my-2">
-          <Form.Label>Landmark</Form.Label>
+          <Form.Label>Landmark*</Form.Label>
           <Form.Control
             type="text"
             placeholder="Enter Your Nearest Identyfing Place"
@@ -159,7 +159,7 @@ const ShippingScreen = () => {
           ></Form.Control>
         </Form.Group>
         <Form.Group controlId="shippingNote" className="my-3">
-          <Form.Label>Shipping Note</Form.Label>
+          <Form.Label>Shipping Note (optional)</Form.Label>
           <Form.Control
             as="textarea"
             rows={3}

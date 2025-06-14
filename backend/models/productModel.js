@@ -17,12 +17,12 @@ const reviewSchema = mongoose.Schema(
 );
 
 const sizeSchema = new mongoose.Schema({
-	size: { type: String, required: true, default: "M" }, // e.g., 'S', 'M', 'L'
+	size: { type: String, required: true, default: "M", unique: true }, // e.g., 'S', 'M', 'L'
 	stock: { type: Number, required: true, default: 0, min: 0 },
 });
 
 const variantSchema = new mongoose.Schema({
-	variantName: { type: String, required: true, trim: true, default: "" },
+	variantName: { type: String, required: true, trim: true, default: "", unique: true },
 	image: { type: String, required: true, default: "/images/sample.jpg" },
 	sizes: [sizeSchema],
 });
