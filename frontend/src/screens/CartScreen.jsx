@@ -25,7 +25,7 @@ const CartScreen = () => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 
-	const [productStatus, { isLoading, error }] = useVerifyOrderStockMutation();
+	const [productStatus, { isLoading }] = useVerifyOrderStockMutation();
 
 	const cart = useSelector((state) => state.cart);
 	const { userInfo } = useSelector((state) => state.auth);
@@ -71,7 +71,7 @@ const CartScreen = () => {
 
 		if (userInfo && cartItems) {
 			checkStock();
-		}
+		} // eslint-disable-next-line
 	}, [productStatus]);
 
 	return (
@@ -104,9 +104,7 @@ const CartScreen = () => {
 									<Col md={3}>
 										<Row>
 											<Link to={`/product/${item._id}`}>
-												<b>
-													{item.name} ({item.variants.variantName})
-												</b>
+												<b>{item.name} ({item.variants.variantName})</b>
 											</Link>
 										</Row>
 										<Row>

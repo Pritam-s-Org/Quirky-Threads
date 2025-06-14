@@ -82,8 +82,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
 		shippingAddress,
 		paymentMethod,
 		itemsPrice,
-		taxPrice,
+		secureTransactionFee,
 		shippingPrice,
+		discount,
 		totalPrice,
 	} = req.body;
 
@@ -104,8 +105,9 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			shippingAddress,
 			paymentMethod,
 			itemsPrice,
-			taxPrice,
+			secureTransactionFee,
 			shippingPrice,
+			discount,
 			totalPrice,
 			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`
 		});
@@ -152,6 +154,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			}
 		} catch (err) {
 			!res.statusCode && res.status(500);
+			console.log(err);
 			res.json({
 				success: false,
 				message: err.message || err.error.description,

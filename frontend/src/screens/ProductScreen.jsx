@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
-import { FaArrowCircleLeft } from "react-icons/fa"
+import { FaArrowCircleLeft, FaCartPlus } from "react-icons/fa"
 import { useDispatch, useSelector } from "react-redux";
 import Rating from "../components/Rating";
 import { useGetProductDetailsQuery, useCreateReviewMutation } from "../slicers/productApiSlice.js";
@@ -31,7 +31,7 @@ const ProductScreen = () => {
   useEffect(()=>{
     setSelectedVariant(product?.variants[0])
     setSize(product?.variants[0]?.sizes[0]?.size)
-  }, [product, productId, selectedVariant])
+  }, [product, productId])
 
   useEffect(()=>{
     setCountInStock(selectedVariant?.sizes?.find(item => item.size === size)?.stock)
@@ -111,7 +111,7 @@ const ProductScreen = () => {
                   <Row className="my-2">
                     {product.variants.map( variant =>
                       <Row className="d-grid gap-2 col-4 mx-auto">
-                        <Button style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}}onClick={()=>setSelectedVariant(variant)}>
+                        <Button style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} onClick={()=>setSelectedVariant(variant)}>
                           {variant._id === selectedVariant?._id ? (<b>{variant.variantName}</b>): (variant.variantName)}
                         </Button>
                       </Row>
@@ -161,14 +161,27 @@ const ProductScreen = () => {
                   )}
                   <ListGroup.Item>
                     {countInStock?
-                      <Row>
-                        <Button
-                          className="btn btn-warning"
-                          type="button"
-                          disabled={!countInStock}
-                          onClick={addToCartHandler}
-                        ><b>Add to Cart</b></Button>
-                      </Row> :
+                      <Col>
+                        <Row className="my-2">
+                          <Button
+                            className="btn btn-warning"
+                            type="button"
+                            disabled={!countInStock}
+                            onClick={addToCartHandler}
+                          ><u><FaCartPlus size="1.5rem" /> <b>Add to Cart</b></u></Button>
+                        </Row>
+                        {/* {userInfo && 
+                          <Row className="my-2">
+                            <Button
+                              className="btn btn-warning py-0"
+                              type="button"
+                              disabled={!countInStock}
+                              style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "2rem", color: "maroon" }}
+                              // onClick={addToCartHandler}
+                            ><u>Order Now!!</u></Button>
+                          </Row>
+                        } */}
+                      </Col> :
                       <Message>Please wait for the next stock update</Message>
                     }
                   </ListGroup.Item>

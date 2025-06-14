@@ -86,7 +86,7 @@ const LoginScreen = () => {
             </div>
             Forgot Password? <Link to="/forgot">Reset Here</Link>
           </Form.Group>
-          <Button type="submit" variant="dark" className="mt-2" disabled={isLoading}>
+          <Button type="submit" variant="warning" className="mt-2 d-grid mx-auto col-6" disabled={isLoading}>
             Sign In
           </Button>
           {isLoading && <Loader />}

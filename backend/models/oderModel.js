@@ -22,16 +22,16 @@ const orderSchema = mongoose.Schema({
     }
   ],
   shippingAddress:{
+    shippingPhoneNumber: { type: String, required: true },
+    shippingEmail: { type: String, required: true },
+    shippingName: { type: String, required: true },
     address:{ type: String, required: true},
     city:{ type: String, required: true},
     district:{ type: String, required: true},
     state:{ type: String, required: true},
     pinCode:{ type: String, required: true},
-    shippingPhoneNumber: { type: String, required: true },
-    shippingEmail: { type: String, required: true },
-    shippingName: { type: String, required: true },
-    shippingLandmark: { type: String, required: true },
-    shippingAddressNote: { type: String, required: true }
+    landmark: { type: String, required: true },
+    shippingNote: { type: String }
   },
   paymentMethod: {
     type: String, required: true
@@ -47,7 +47,12 @@ const orderSchema = mongoose.Schema({
     required:true,
     default: 0.00
   },
-  taxPrice: {
+  secureTransactionFee: {
+    type: Number,
+    required:true,
+    default: 0.00
+  },
+  discount: {
     type: Number,
     required:true,
     default: 0.00

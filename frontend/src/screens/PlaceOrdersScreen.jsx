@@ -7,7 +7,7 @@ import CheckoutSteps from "../components/CheckoutSteps";
 import Loader from "../components/Loader";
 import Message from "../components/Message";
 import Meta from "../components/Meta.jsx";
-import { useCreateOrderMutation, useVerifyRazorpayPaymentMutation} from "../slicers/orderApiSlices";
+import { useCreateOrderMutation, useVerifyOrderStockMutation, useVerifyRazorpayPaymentMutation} from "../slicers/orderApiSlices";
 import { clearCartItems } from "../slicers/cartSlice";
 import brandLogo from "../assetes/Brand.png"
 
@@ -18,6 +18,7 @@ const PlaceOrdersScreen = () => {
 	const { userInfo } = useSelector((state) => state.auth);
 
 	const [createOrder, { isLoading, error }] = useCreateOrderMutation();
+	const [productStatus, { isLoading: stockChecking }] = useVerifyOrderStockMutation();
 	const [verifyRazorpayPayment, { isLoading: loadingVerification }] =
 		useVerifyRazorpayPaymentMutation();
 
@@ -29,16 +30,25 @@ const PlaceOrdersScreen = () => {
 		}
 	}, [cart.shippingAddress.address, cart.paymentMethod, navigate]);
 
+	const orderItems = cart.cartItems?.map((item) => ({
+		keyId: item.keyId,
+		qty: item.qty,
+	}));
+
 	const placeOrderHandler = async (e) => {
 		try {
+			const response = await productStatus(orderItems).unwrap();
+			if (!response.success) return toast.error("One of your order items having stock issue, please verify it from cart screen.");
+			
 			const res = await createOrder({
 				orderItems: cart.cartItems,
 				shippingAddress: cart.shippingAddress,
 				paymentMethod: cart.paymentMethod,
 				itemsPrice: cart.itemsPrice,
 				shippingPrice: cart.shippingPrice,
-				taxPrice: cart.taxPrice,
-				totalPrice: cart.totalPrice,
+				secureTransactionFee: cart.secureTransactionFee,
+				discount: cart.discount,
+				totalPrice: cart.totalPrice
 			}).unwrap();
 
 			if (cart.paymentMethod === "COD") {
@@ -119,8 +129,8 @@ const PlaceOrdersScreen = () => {
 							<h2>Shipping</h2>
 							<p>
 								<strong>Address: </strong>
-								{cart.shippingAddress.address}, {cart.shippingAddress.city},{" "}
-								{cart.shippingAddress.district}, {cart.shippingAddress.pinCode}
+								{cart.shippingAddress.address}, {cart.shippingAddress.landmark}.
+								<br />{cart.shippingAddress.city}, {cart.shippingAddress.district}, {cart.shippingAddress.pinCode}
 							</p>
 						</ListGroup.Item>
 						<ListGroup.Item>
@@ -139,14 +149,15 @@ const PlaceOrdersScreen = () => {
 											<Row>
 												<Col md={1}>
 													<Image
-														src={item.image}
-														alt={item.name}
+														src={item.variants.image}
+														alt={`${item.name}-${item.variants.variantName}`}
 														fluid
 														rounded
 													/>
 												</Col>
 												<Col>
-													<Link to={`/product/${item._id}`}>{item.name}</Link>
+													<Link to={`/product/${item._id}`}><b>{item.name} ({item.variants.variantName})</b></Link>
+													 <p>Size: {item.variants?.sizes?.size}</p>
 												</Col>
 												<Col md={4}>
 													₹{item.price} × {item.qty} = ₹{item.qty * item.price}
@@ -162,52 +173,52 @@ const PlaceOrdersScreen = () => {
 				<Col md={4}>
 					<Card>
 						<ListGroup variant="flush">
-							<ListGroup.Item></ListGroup.Item>
+							<ListGroup.Item><h2>Price Breakup</h2></ListGroup.Item>
 							<ListGroup.Item>
 								<Row>
 									<Col>Items:</Col>
-									<Col>₹{cart.itemsPrice}</Col>
+									<Col className="text-end">₹{cart.itemsPrice}</Col>
 								</Row>
 							</ListGroup.Item>
 							<ListGroup.Item>
 								<Row>
 									<Col>Shipping:</Col>
-									<Col>₹{cart.shippingPrice}</Col>
+									<Col className="text-end">+ ₹{cart.shippingPrice}</Col>
 								</Row>
 							</ListGroup.Item>
 							<ListGroup.Item>
 								<Row>
-									<Col>Tax:</Col>
-									<Col>₹{cart.taxPrice}</Col>
+									<Col>Secure Transaction Fee:</Col>
+									<Col className="text-end">+ ₹{cart.secureTransactionFee}</Col>
 								</Row>
 							</ListGroup.Item>
+							{cart.paymentMethod === "Razorpay" && <ListGroup.Item>
+								<Row>
+									<Col>Discount:</Col>
+									<Col className="text-end">- ₹{cart.discount}</Col>
+								</Row>
+							</ListGroup.Item>}
 							<ListGroup.Item>
 								<Row>
 									<Col>Total:</Col>
-									<Col>₹{cart.totalPrice}</Col>
+									<Col className="text-end"><b>₹{cart.totalPrice}</b></Col>
 								</Row>
 							</ListGroup.Item>
 							<ListGroup.Item>
+								{stockChecking && <Loader />}
 								{error && <Message variant="danger">{error}</Message>}
 							</ListGroup.Item>
 							<ListGroup.Item>
-								{/* <Button
-									type="button"
-									className="btn-dark"
-									disabled={cart.cartItems.length === 0}
-									onClick={placeOrderHandler}
-								>
-									Place Order
-								</Button> */}
 								<Button
 									type="button"
-									className="btn-dark"
+									className="btn-warning col-12"
 									disabled={cart.cartItems.length === 0}
 									onClick={placeOrderHandler}
+									style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "1.5rem" }}
 								>
 									{cart.paymentMethod === "Razorpay"
-										? "Pay to place your order"
-										: "Place Order"}
+										? "Pay & Place Order!"
+										: "Place Order!"}
 								</Button>
 								{isLoading && <Loader />}
 							</ListGroup.Item>

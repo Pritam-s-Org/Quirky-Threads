@@ -134,7 +134,7 @@ const RegisterScreen = () => {
                 {isverified ? <FaCheck color="green"/> : 
                   sendingOtp ? <div className="spinner-border" role="status" /> :
                   <button 
-                    className="btn btn-outline-dark border-0 btn-sm"
+                    className="btn btn-outline-warning border-0 btn-sm"
                     onClick={ async () => {handleSendOtp()}}
                     disabled={!email || !email.includes("@") || !email.includes(".") || isverified || sendingOtp}
                   ><b>Verify</b></button>
@@ -193,7 +193,7 @@ const RegisterScreen = () => {
               style={{color: "red"}}
             >Your Password isn't matching with entered password</h6>
           </Form.Group>
-          <Button type="submit" variant="dark" className="mt-2" disabled={isLoading}>
+          <Button type="submit" variant="warning" className="mt-2" disabled={isLoading}>
             Register
           </Button>
           {isLoading && <Loader />}

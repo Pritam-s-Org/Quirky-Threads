@@ -20,48 +20,64 @@ const ForgotPassword = () => {
 
   const inputRefs = useRef([]);
   
-    const handleChange = (e, index) => {
-      const value = e.target.value.replace(/\D/, ''); // Remove non-digits
-      if (!value) return;
-  
-      inputRefs.current[index].value = value;
-  
-      // Auto-focus next box
-      if (index < otpLength - 1) {
-        inputRefs.current[index + 1]?.focus();
-      }
-  
-      const currentOTP = inputRefs.current.map((ref) => ref?.value || '').join('');
-      if (currentOTP.match(/^\d{6}$/)) {
-        handleVerify(currentOTP);
-      }
-    };
-  
-    const handleKeyDown = (e, index) => {
-      if (e.key === 'Backspace' && !e.target.value && index > 0) {
-        inputRefs.current[index - 1]?.focus();
-      }
-    };
+  const handleChange = (e, index) => {
+    const value = e.target.value.replace(/\D/, ''); // Remove non-digits
+    if (!value) return;
 
-    const handleVerify = async (otp) => {
-      try {
-        if (!otp || otp.length !== 6) {
-          toast.error("Please enter a valid 6-digit OTP");
-          return;
-        }
-        const res = await verifyOtp({ email, otp, reqType: "resetPassword" }).unwrap();
-        if (res.success) {
-          setIsVerified(true);
-          res?.data?.email && setEmail(res.data.email);
-          navigate("/login");
-          toast.success("Email verified successfully!\nPlease check your email for the new password.");
-        } else {
-          toast.error(res.data.message || "OTP verification failed");
-        }
-      } catch (err) {
-        toast.error(err?.response?.data?.message || err.message || "Failed to verify OTP");
-      }
+    inputRefs.current[index].value = value;
+
+    // Auto-focus next box
+    if (index < otpLength - 1) {
+      inputRefs.current[index + 1]?.focus();
     }
+
+    const currentOTP = inputRefs.current.map((ref) => ref?.value || '').join('');
+    if (currentOTP.match(/^\d{6}$/)) {
+      handleVerify(currentOTP);
+    }
+  };
+
+  const handleKeyDown = (e, index) => {
+    if (e.key === 'Backspace' && !e.target.value && index > 0) {
+      inputRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleSendOtp = async () => {
+    if (!email) {
+      toast.error("Please enter your email address to verify");
+      return;
+    }
+    try {
+      const res = await sendOtp({ email, reqType: "resetPassword" }).unwrap();
+      if (res.success) {
+        toast.success(res.message);
+        setSentOtp(true);
+      }
+    } catch (err) {
+      toast.error(err?.data?.message || err.message || "Failed to send OTP");
+    }
+  }
+
+  const handleVerify = async (otp) => {
+    try {
+      if (!otp || otp.length !== 6) {
+        toast.error("Please enter a valid 6-digit OTP");
+        return;
+      }
+      const res = await verifyOtp({ email, otp, reqType: "resetPassword" }).unwrap();
+      if (res.success) {
+        setIsVerified(true);
+        res?.data?.email && setEmail(res.data.email);
+        navigate("/login");
+        toast.success("Email verified successfully!\nPlease check your email for the new password.");
+      } else {
+        toast.error(res.data.message || "OTP verification failed");
+      }
+    } catch (err) {
+      toast.error(err?.response?.data?.message || err.message || "Failed to verify OTP");
+    }
+  }
 
 	return (
 		<Card>
@@ -113,25 +129,8 @@ const ForgotPassword = () => {
 						</Button>
 					) : (
 						<Button
-							className="btn btn-outline-dark border-bottom mt-2"
-							onClick={async () => {
-								if (!email) {
-									toast.error("Please enter your email address to verify");
-									return;
-								}
-								try {
-									const res = await sendOtp({
-										email,
-										reqType: "resetPassword",
-									}).unwrap();
-									if (res.success) {
-										toast.success(res.message);
-                    setSentOtp(true);
-									}
-								} catch (err) {
-									toast.error(err?.data?.message || err.message || "Failed to send OTP");
-								}
-							}}
+							className="btn-outline-warning mt-2 border-0"
+							onClick={async () => handleSendOtp()}
 							disabled={ !email || !email.includes("@") || !email.includes(".") || isverified ||sendingOtp}
 						>
 							<b>Verify</b>

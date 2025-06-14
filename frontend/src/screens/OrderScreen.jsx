@@ -90,7 +90,7 @@ const OrderScreen = () => {
       error ? (<Message variant="danger" />) :
         (
           <>
-            <Meta title={`Quirky Threads | Checkout-${order._id}`} />
+            <Meta title={`Quirky Threads | Order-${order._id}`} />
             <h1>Order: {order._id}</h1>
             <Row>
               <Col md={8}>
@@ -126,9 +126,9 @@ const OrderScreen = () => {
                     {order.orderItems.map((item, index) => (
                       <ListGroup.Item key={index}>
                         <Row>
-                          <Col md={1}><Image src={item.image} alt={item.name} fluid rounded /></Col>
+                          <Col md={1}><Image src={item.image} alt={`${item.name}-${item.variant}`} fluid rounded /></Col>
                           <Col>
-                            <Link to={`/product/${item.product}`}>{item.name}</Link>
+                            <Link to={`/product/${item.product}`}>{item.name} ({item.variant})</Link>
                           </Col>
                           <Col md={4}>
                             ₹{item.price} × {item.qty} = ₹{item.qty * item.price}

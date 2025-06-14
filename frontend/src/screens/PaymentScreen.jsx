@@ -42,7 +42,7 @@ const PaymentScreen = () => {
           <Form.Check
               type="radio"
               className="my-2"
-              label="Online Payment (UPI, Debit/Credit Card)"
+              label="Online Payment (Avail Additional 10% Discount on every order)"
               id="Razorpay"
               value="Razorpay"
               checked={"Razorpay" === paymentMethod}
@@ -61,7 +61,7 @@ const PaymentScreen = () => {
             />
           </Col>
         </Form.Group>
-        <Button type="submit" variant="dark">Continue</Button>
+        <Button type="submit" variant="warning">Continue</Button>
       </Form>
     </FormContainer>
   )
