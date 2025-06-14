@@ -47,7 +47,7 @@ const ShippingScreen = () => {
     <FormContainer>
       <Meta title={"Quirky Threads | Shipping"}/>
       <CheckoutSteps step1 step2 />
-      <h1>Shipping</h1>
+      <h1>Shipping Details</h1>
       <hr />
       <Form onSubmit={submitHandler}>
         <Col onClick={() => setOpen(!open)} aria-controls="basic-details-section" aria-expanded={open} cursor="pointer" style={{cursor: "pointer"}}>
@@ -74,7 +74,7 @@ const ShippingScreen = () => {
               onChange={(e) => setShippingEmail(e.target.value)}
               required
             ></Form.Control>
-            <p style={{color: "navy", fontSize: "0.8rem"}}>Order confirmation mail will be sent to this mail id</p>
+            <p style={{color: "maroon", fontSize: "0.8rem"}}>Order confirmation mail will be sent to this mail id</p>
           </Form.Group>
           <Form.Group controlId="shippingPhoneNumber" className="my-2">
             <Form.Label>Mobile*</Form.Label>
@@ -85,7 +85,7 @@ const ShippingScreen = () => {
               onChange={(e) => /^\d*$/.test(e.target.value) && setShippingPhoneNumber(e.target.value.slice(0,10))}
               required
             ></Form.Control>
-            <p style={{color: "navy", fontSize: "0.8rem"}}>This number will be shared with the delivary person</p>
+            <p style={{color: "maroon", fontSize: "0.8rem"}}>This number will be shared with the delivary person</p>
           </Form.Group>
           <hr />
         </Col>

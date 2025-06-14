@@ -115,8 +115,9 @@ const ProductScreen = () => {
                           style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} 
                           onClick={()=>setSelectedVariant(variant)}
                           className={`${variant._id === selectedVariant?._id? "border-3 shadow-none" : "border-0 shadow"} text-truncate`}
+                          disabled={variant._id === selectedVariant?._id}
                         >
-                          {variant._id === selectedVariant?._id ? (<b>{variant.variantName}</b>): (variant.variantName)}
+                          {variant._id === selectedVariant?._id ? (<b><u>{variant.variantName}</u></b>): (variant.variantName)}
                         </Button>
                       </Row>
                     )}
@@ -185,8 +186,7 @@ const ProductScreen = () => {
                             ><u>Order Now!!</u></Button>
                           </Row>
                         } */}
-                      </Col> :
-                      <Message>Please wait for the next stock update</Message>
+                      </Col> : <Message>Please wait for the next stock update</Message>
                     }
                   </ListGroup.Item>
                 </ListGroup>

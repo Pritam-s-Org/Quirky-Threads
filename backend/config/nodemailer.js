@@ -18,12 +18,12 @@ export const sendOTPEmail = async (email, otp, type = 'register') => {
 
   const heading =
     type === 'register'
-      ? 'Welcome to <span style="color:#2f1cd9;">Quirky-Threads</span>!'
+      ? 'Welcome to <span style="color: #8e8200;">Quirky-Threads</span>!'
       : 'Password Reset Request';
 
   const message =
     type === 'register'
-      ? `Thank you for registering with <strong>Quirky-Threads Online Platform</strong>. To complete your sign-up process, please verify your email address by entering the OTP below:`
+      ? `Thank you for registering with <strong>Quirky-Threads Online</strong>. To complete your sign-up process, please verify your email address by entering the OTP below:`
       : `You’ve requested to reset your password for your <strong>Quirky-Threads</strong> account. Use the OTP below to proceed with resetting your password:`;
 
   const ignoreNote =
@@ -32,7 +32,7 @@ export const sendOTPEmail = async (email, otp, type = 'register') => {
       : `If you did not request a password reset, you can safely ignore this email.`;
 
   const mailOptions = {
-    from: `"Quirky-Threads Online Platform" <${process.env.EMAIL_USER}>`,
+    from: `"Quirky-Threads Online" <${process.env.EMAIL_USER}>`,
     to: email,
     subject,
     html: `
@@ -60,9 +60,9 @@ export const sendOTPEmail = async (email, otp, type = 'register') => {
 
 export const sendNewPasswordEmail = async (email, newPassword) => {
   const mailOptions = {
-    from: `"Quirky-Threads Online Platform" <${process.env.EMAIL_USER}>`,
+    from: `"Quirky-Threads Online" <${process.env.EMAIL_USER}>`,
     to: email,
-    subject: 'Your New Password - Quirky-Threads Online Platform',
+    subject: 'Your New Password - Quirky-Threads Online',
     html: `
       <div style="font-family: Arial, sans-serif; background-color: #f9f9f9; padding: 20px;">
         <div style="max-width: 600px; margin: auto; background: #ffffff; padding: 30px; border-radius: 10px; box-shadow: 0 2px 8px rgba(0,0,0,0.1);">
@@ -70,11 +70,11 @@ export const sendNewPasswordEmail = async (email, newPassword) => {
           <p>Hello,</p>
           <p>Your password has been successfully reset by our system. Below is your new password:</p>
           <div style="text-align: center; margin: 30px 0;">
-            <span style="display: inline-block; padding: 12px 24px; background-color: #ef233c; color: #fff; font-size: 20px; font-weight: bold; border-radius: 6px;">
+            <span style="display: inline-block; padding: 12px 24px; background-color: #800000; color: #fff; font-size: 20px; font-weight: bold; border-radius: 6px;">
               ${newPassword}
             </span>
           </div>
-          <p>We recommend you <a href="https://quirky-threads-ecom-platform.onrender.com/login">log in</a> using this password and change it immediately from your profile settings for security purposes.</p>
+          <p>We recommend you <a href="https://quirky-threads.onrender.com/login">log in</a> using this password and change it immediately from your profile settings for security purposes.</p>
           <p>If you did not request this change, please contact our support team immediately.</p>
           <hr style="margin: 30px 0; border: none; border-top: 1px solid #eee;" />
           <p style="font-size: 14px; color: #888;">Best regards,<br><strong>Quirky-Threads Team</strong></p>

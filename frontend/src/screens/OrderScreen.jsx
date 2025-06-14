@@ -135,7 +135,7 @@ const OrderScreen = () => {
                             <h5>{item.qty} Unit</h5>
                           </Col>
                           <Col md={4}>
-                            ₹{item.price} × {item.qty} = ₹{item.qty * item.price}
+                            <h5>₹{item.price} × {item.qty} = ₹{item.qty * item.price}</h5>
                           </Col>
                         </Row>
                       </ListGroup.Item>
@@ -150,24 +150,24 @@ const OrderScreen = () => {
                     <ListGroup.Item>
                       <Row>
                         <Col>Items</Col>
-                        <Col>₹{order.itemsPrice}</Col>
+                        <Col className="text-end">₹{order.itemsPrice.toFixed(2)}</Col>
                       </Row>
                       <Row>
                         <Col>Shipping</Col>
-                        <Col>+ ₹{order.shippingPrice}</Col>
+                        <Col className="text-end">+ ₹{order.shippingPrice.toFixed(2)}</Col>
                       </Row>
                       {order.secureTransactionFee > 0 && <Row>
                         <Col>Transaction Fee</Col>
-                        <Col>+ ₹{order.secureTransactionFee}</Col>
+                        <Col className="text-end">+ ₹{order.secureTransactionFee.toFixed(2)}</Col>
                       </Row>}
                       <Row>
                         <Col>Discount</Col>
-                        <Col>- ₹{order.discount}</Col>
+                        <Col className="text-end">- ₹{order.discount.toFixed(2)}</Col>
                       </Row>
                       <hr />
                       <Row>
                         <Col>Total</Col>
-                        <Col>₹{order.totalPrice}</Col>
+                        <Col className="text-end">₹{order.totalPrice}</Col>
                       </Row>
                     </ListGroup.Item>
                     {!order.isPaid && order.paymentMethod === "PayPal" ? (

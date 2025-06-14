@@ -86,13 +86,13 @@ const LoginScreen = () => {
             </div>
             Forgot Password? <Link to="/forgot">Reset Here</Link>
           </Form.Group>
-          <Button type="submit" variant="warning" className="mt-2 d-grid mx-auto col-6" disabled={isLoading}>
+          <Button type="submit" variant="warning" className="mt-4 d-grid mx-auto col-6" disabled={isLoading}>
             Sign In
           </Button>
           {isLoading && <Loader />}
         </Form>
         <Row className="py-3">
-          <Col>
+          <Col className="text-center">
             New Customer? <Link to={redirect ? `/register?redirect=${redirect}` : "/register"}>Register Here</Link>
           </Col>
         </Row>
