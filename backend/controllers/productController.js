@@ -7,7 +7,13 @@ import Product from "../models/productModel.js";
 const getPaginatedProducts = asyncHandler (async (req, res)=>{
   const pageSize = 4;
   const page = Number(req.query.pageNumber);
-  const keyword = req.query.keyword ? {name: {$regex: req.query.keyword, $options: "i" }} : {}
+  const keyword = req.query.keyword ? {
+      $or: [
+        { name: { $regex: req.query.keyword, $options: "i" } },
+        { tags: { $elemMatch: { $regex: `^${req.query.keyword}$`, $options: "i" }}}
+      ]
+    }
+  : {};
 
   const count = await Product.countDocuments({...keyword})
   const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
@@ -52,7 +58,7 @@ const updateProduct = asyncHandler (async (req, res)=>{
   if (product) {
     product.name = name
     product.price = price
-    product.tags = tags
+    product.tags = tags.split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
     product.description = description
     product.variants = variants
 
