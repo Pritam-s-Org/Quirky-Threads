@@ -26,6 +26,7 @@ const Header = () => {
       navigate("/login")
       toast.success("You have been logged Out successfully!")
     } catch (err) {
+      toast.error("Unable to log you out, you can check console for more details.")
       console.log(`logout error=> ${err}`)
     }
   }
@@ -64,7 +65,7 @@ const Header = () => {
                 </NavDropdown>
               ) : (
                 <LinkContainer to="/login">
-                  <Nav.Link href="/login">
+                  <Nav.Link>
                     <FaUser /> Sign In
                   </Nav.Link>
                 </LinkContainer>
