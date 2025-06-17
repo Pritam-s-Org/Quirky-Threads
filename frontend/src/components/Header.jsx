@@ -51,7 +51,6 @@ const Header = () => {
                       style={{ marginLeft: "5px" }}>
                       {/* {cartItems.reduce((a, c) => a + c.qty, 0)} */}
                       {cartItems.length}
-                      {console.log(cartItems.length)}
                     </Badge>
                   )}
                 </Nav.Link>

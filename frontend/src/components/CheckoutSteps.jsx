@@ -45,7 +45,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
           )}
         </Nav.Item>
       </Nav>
-      <ProgressBar variant="warning" now={steps.filter(Boolean).length*25} className="mb-3 mt-0"/>
+      <ProgressBar variant="warning" now={steps.filter(Boolean).length*25} className="mb-3 mt-0" style={{height: "8px"}} label={steps[1]}/>
     </>
   )
 }
