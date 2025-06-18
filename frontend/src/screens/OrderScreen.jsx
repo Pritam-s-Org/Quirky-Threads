@@ -119,11 +119,11 @@ const OrderScreen = () => {
                         <Col className="text-end">₹{order.totalPrice}</Col>
                       </Row>
                     </ListGroup.Item>
-                    {userInfo && userInfo.isAdmin && !order.isPaid && !order.isDelivered ? (
+                    {userInfo && userInfo.role === "admin" && !order.isPaid && !order.isDelivered ? (
                       <ListGroup.Item>
                         <Button onClick={onApprovePayment} className="mx-auto d-grid col-8" variant="warning">Payment Received</Button>
                       </ListGroup.Item>
-                    ) : userInfo && userInfo.isAdmin && order.isPaid && !order.isDelivered &&
+                    ) : userInfo && userInfo.role === "admin" && order.isPaid && !order.isDelivered &&
                       <ListGroup.Item>
                         <Button className="mx-auto d-grid col-8" onClick={deliverOrderHandler} variant="success">Mark As Delivered</Button>
                       </ListGroup.Item>

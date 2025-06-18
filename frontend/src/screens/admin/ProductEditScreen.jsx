@@ -32,7 +32,7 @@ const ProductEditScreen = () => {
 	const submitHandler = async (e) => {
 		e.preventDefault();
 		try {
-			await updateAnyProduct({ productId, name, price, tags, description, variants }).unwrap();
+			await updateAnyProduct({ productId, name:name.trim(), price, tags, description:description.trim(), variants }).unwrap();
 			toast.success("Product updated");
 			refetch();
 			navigate("/admin/productlist");
@@ -142,7 +142,7 @@ const ProductEditScreen = () => {
 								type="text"
 								placeholder="Enter Product Name"
 								value={name}
-								onChange={(e) => setName(e.target.value.trim())}
+								onChange={(e) => setName(e.target.value)}
 							/>
 						</Form.Group>
 						<Form.Group controlId="description" className="my-3">
@@ -152,7 +152,7 @@ const ProductEditScreen = () => {
 								rows={3}
 								placeholder="Enter Product Description"
 								value={description}
-								onChange={(e) => setDescription(e.target.value.trim())}
+								onChange={(e) => setDescription(e.target.value)}
 							/>
 						</Form.Group>
 						<Form.Group controlId="price" className="my-3">

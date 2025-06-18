@@ -11,7 +11,7 @@ const protect = asyncHandler(async (req, res, next)=>{
     try {
       const decoded = jwt.verify(token, process.env.JWT_SECRET)
       req.user = await User.findById(decoded.userId).select("-password")
-      next()
+      next();
     } catch (error) {
       res.status(401);
       throw new Error("Not authorised, token failed")
@@ -24,12 +24,22 @@ const protect = asyncHandler(async (req, res, next)=>{
 
 // Admin Middleware
 const admin  = (req, res, next)=>{
-  if (req.user && req.user.isAdmin) {
-    next()
+  if (req.user && req.user.role === "admin") {
+    next();
   } else {
     res.status(401);
-    throw new Error("Not authorised as admin")
+    throw new Error("Not authorised as Admin")
   }
 }
 
-export { protect, admin }
+// Manufacturer Middleware
+const manufacturer = (req, res, next)=> {
+  if (req.user && (req.user.role === "manufacturer" || req.user.role === "admin")) {
+    next ();
+  } else {
+    res.status(401);
+    throw new Error("Not authorised as Manufacturer")
+  }
+}
+
+export { protect, admin, manufacturer }

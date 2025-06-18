@@ -1,7 +1,7 @@
 import React from 'react'
 import { LinkContainer } from "react-router-bootstrap"
 import { Table, Button } from "react-bootstrap"
-import { FaTimes, FaTrash, FaEdit, FaCheck } from "react-icons/fa"
+import { FaTimes, FaTrash, FaEdit } from "react-icons/fa"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import Meta from "../../components/Meta"
@@ -37,7 +37,7 @@ const UserListScreen = () => {
                 <th>Name</th>
                 <th>Email</th>
                 <th>Mobile No.</th>
-                <th>Admin</th>
+                <th>Role</th>
                 <th></th>
               </tr>
             </thead>
@@ -50,11 +50,11 @@ const UserListScreen = () => {
                   <td><a href={`mailto:${user.email}`} style={{ textDecoration: "none" }}>{user.email}</a></td>
                   <td><a href={`tel:+91${user.mobileNo}`} style={{ textDecoration: "none" }}>+91 {user.mobileNo.substring(0, 5)} {user.mobileNo.substring(5, 10)}</a></td>
                   <td>
-                    {user.isAdmin ? <FaCheck color="green" /> : <FaTimes color="red" />}
+                    <h6 className="mb-0">{user.role ==="admin" ? "Adm" : user.role === "manufacturer" ? "Manu" : user.role === "customer" ? "Cust" : <FaTimes color="red" />}.</h6>
                   </td>
                   <td>
                     <LinkContainer to={`/admin/user/${user._id}/edit`}>
-                      <Button variant="light" className="btn-sm mx-2">
+                      <Button variant="light" className="btn-sm mx-1">
                         <FaEdit />
                       </Button>
                     </LinkContainer>

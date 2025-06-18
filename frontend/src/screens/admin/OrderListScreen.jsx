@@ -25,8 +25,9 @@ const OrderListScreen = () => {
                 <th>User</th>
                 <th>Ordered Date</th>
                 <th>Total</th>
-                <th>Paid</th>
-                <th>Delivered</th>
+                <th>Method</th>
+                <th>Paid Date</th>
+                <th>Delivered Date</th>
               </tr>
             </thead>
             <tbody>
@@ -37,6 +38,7 @@ const OrderListScreen = () => {
                   <td>{order.user && order.user.name}</td>
                   <td>{dateFormatting(order.createdAt).substring(0,10)}</td>
                   <td>{order.totalPrice}</td>
+                  <td>{order.paymentMethod}</td>
                   <td>
                     {order.isPaid ? (
                       dateFormatting(order.paidAt).substring(0,10)

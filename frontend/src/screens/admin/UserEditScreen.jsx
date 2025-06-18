@@ -17,7 +17,7 @@ const UserEditScreen = () => {
   const [email, setEmail] = useState("")
   const [mobileNo, setMobileNo] = useState("")
   const [password, setPassword] = useState("")
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [role, setRole] = useState(false)
   const [passLen, setPassLen] = useState(10)
   const [isCopied, setIsCopied] = useState(false)
 
@@ -30,7 +30,7 @@ const UserEditScreen = () => {
       setName(user.name)
       setEmail(user.email)
       setMobileNo(user.mobileNo)
-      setIsAdmin(user.isAdmin)
+      setRole(user.role)
     }
   }, [user])
 
@@ -40,7 +40,7 @@ const UserEditScreen = () => {
       toast.warning("Please re-check your mobile number")
     } else {
       try {
-        await updateUser({ userId, name, email, mobileNo, password, isAdmin }).unwrap();
+        await updateUser({ userId, name, email, mobileNo, password, role }).unwrap();
         toast.success('User Details Updated Successfully.');
         refetch();
         navigate('/admin/userlist');
@@ -173,14 +173,16 @@ const UserEditScreen = () => {
                     }}>Generate</Button>
                 </div>
               </Form.Group>
-              <Form.Group controlId="isAdmin" className="my-2">
-                <Form.Label>Set Admin</Form.Label>
-                <Form.Check
-                  type="checkbox"
-                  label="Is Admin?"
-                  checked={isAdmin}
-                  onChange={e => setIsAdmin(e.target.checked)}
-                />
+              <Form.Group controlId="role" className="my-2">
+                <Form.Label>Set Role</Form.Label>
+                <Form.Select
+                  value={role}
+                  onChange={e => setRole(e.target.value)}
+                >
+                  <option value="customer">Customer</option>
+                  <option value="admin">Admin</option>
+                  <option value="manufacturer">Manufacturer</option>
+                </Form.Select>
               </Form.Group>
               <Button
                 type="submit"

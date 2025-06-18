@@ -16,8 +16,6 @@ const sendOtp = asyncHandler (async (req, res)=>{
   }
   const otp = Math.floor(100000 + Math.random() * 900000).toString();
   
-  req.app.locals.otpStore[email] = otp;
-
   try {
     const userExists = await User.findOne({ email })
     if ( reqType === "register" && userExists) {
@@ -28,10 +26,12 @@ const sendOtp = asyncHandler (async (req, res)=>{
       throw new Error("User Doesn't Exists");
     }
     await sendOTPEmail(email, otp, reqType);
+    req.app.locals.otpStore[email] = otp;
     res.status(200).json({ success: true, message: "OTP sent successfully!", data: email });
   } catch (err) {
     (res.status !== 400) && res.status(442);
     res.json({ success: false, message: err.message || "Failed to send OTP" });
+    console.log(err);
   }
 });
 
@@ -92,16 +92,23 @@ const authUser = asyncHandler (async (req, res)=>{
   const user = await User.findOne({ email })
 
   if (user && (await user.checkPwd(password)) ){
-    generateToken(res, user._id)
+    generateToken(res, user._id);
+    user.lastLoggedIn = new Date();
 
-    res.status(200).json({
-      _id: user._id,
-      email: user.email,
-      mobileNo: user.mobileNo,
-      name: user.name,
-      isAdmin: user.isAdmin,
-      loggedInTime: new Date().toISOString()
-    })
+    try {
+      const updatedUser = await user.save();
+      res.status(200).json({
+        _id: updatedUser._id,
+        email: updatedUser.email,
+        mobileNo: updatedUser.mobileNo,
+        name: updatedUser.name,
+        role: updatedUser.role,
+        loggedInTime: updatedUser.lastLoggedIn.toISOString()
+      })
+    } catch (err) {
+      res.status(400)
+      throw new Error("Unable to update the Logged In time.")
+    }
   } else {
     res.status(401)
     throw new Error("Invalid email or password")
@@ -129,7 +136,8 @@ const registerUser = asyncHandler (async (req, res)=>{
       name,
       email,
       mobileNo,
-      password
+      password,
+      lastLoggedIn: new Date()
     })
     delete req.app.locals.otpStore[email];
     if(user){
@@ -140,8 +148,8 @@ const registerUser = asyncHandler (async (req, res)=>{
         name: user.name,
         email: user.email,
         mobileNo: user.mobileNo,
-        isAdmin: user.isAdmin,
-        loggedInTime: new Date().toISOString()
+        role: user.role,
+        loggedInTime: user.lastLoggedIn.toISOString()
       })
     } else {
       res.status(400)
@@ -178,7 +186,7 @@ const getUserProfile = asyncHandler (async (req, res)=>{
       name: user.name,
       email: user.email,
       mobileNo: user.mobileNo,
-      isAdmin: user.isAdmin
+      role: user.role
     })
   } else {
     res.status(404)
@@ -215,7 +223,7 @@ const updateUserProfile = asyncHandler (async (req, res)=>{
       name: updateUser.name,
       email: updateUser.email,
       mobileNo: updateUser.mobileNo,
-      isAdmin: updateUser.isAdmin,
+      role: updateUser.role,
       loggedInTime: new Date().toISOString()
     })
   } else{
@@ -228,7 +236,7 @@ const updateUserProfile = asyncHandler (async (req, res)=>{
 //@route  GET/api/users/
 //@access Private/Admin
 const getUsers = asyncHandler (async (req, res)=>{
-  const users = await User.find({})
+  const users = await User.find({}).select("-password")
   res.status(200).json(users)
 })
 
@@ -236,7 +244,7 @@ const getUsers = asyncHandler (async (req, res)=>{
 //@route  GET/api/users/:id
 //@access Private/Admin
 const getUsersByID = asyncHandler (async (req, res)=>{
-  const user = await User.findById(req.params.id)
+  const user = await User.findById(req.params.id).select("-password")
   
   if (user) {
     return res.status(200).json(user);
@@ -252,9 +260,9 @@ const getUsersByID = asyncHandler (async (req, res)=>{
 const deleteUser = asyncHandler (async (req, res)=>{
   const user = await User.findById(req.params.id)
 
-  if (user && user.isAdmin) {
+  if (user && user.role === "admin") {
     res.status(400).json({message: "Cannot delete Admin User, you can delete it form the database only."})
-  }else if(user && !user.isAdmin){
+  }else if(user && !user.role === "admin"){
     await User.deleteOne({_id: user._id})
     res.status(200).json({message: "User deleted from the database!"})
   } else {
@@ -276,7 +284,7 @@ const updateUsersByID = asyncHandler (async (req, res)=>{
     if(req.body.password){
       user.password = req.body.password
     }
-    user.isAdmin = Boolean(req.body.isAdmin)
+    user.role = req.body.role
 
     const updateUser = await user.save()
     res.status(200).json({
@@ -284,7 +292,7 @@ const updateUsersByID = asyncHandler (async (req, res)=>{
       name: updateUser.name,
       email: updateUser.email,
       mobileNo: updateUser.mobileNo,
-      isAdmin: updateUser.isAdmin
+      role: updateUser.role
     })
   } else{
       res.status(404)

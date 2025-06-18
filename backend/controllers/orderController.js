@@ -186,14 +186,11 @@ const verifyPayment = asyncHandler(async (req, res) => {
 			.digest("hex");
 
 		if (expectedSignature !== razorpay_signature) {
-			return res.status(400).json({
-				success: false,
-				message: "Invalid signature, payment verification failed",
-			});
+			res.status(400)
+			throw new Error("Invalid signature, payment verification failed");
 		} else if (!razorpay_order_id || !orderId) {
-			return res
-				.status(400)
-				.json({ success: false, message: "Missing required fields" });
+			res.status(400)
+			throw new Error ("Missing required fields");
 		}
 
 		const order = await Order.findById(orderId);
@@ -206,19 +203,16 @@ const verifyPayment = asyncHandler(async (req, res) => {
 			!paymentResponse.items ||
 			paymentResponse.items.length === 0
 		) {
-			return res.status(404).json({
-				success: false,
-				message: "No payment found for this Razorpay order",
-			});
+			res.status(404)
+			throw new Error("No payment found for this Razorpay order");
 		}
 		const successfulPayment = paymentResponse.items
 			.filter((p) => p.status === "captured")
 			.sort((a, b) => b.created_at - a.created_at)[0];
 
 		if (!successfulPayment) {
-			return res
-				.status(400)
-				.json({ success: false, message: "No successful payment found" });
+			res.status(400)
+			throw new Error("No successful payment found");
 		}
 		//save to database as order paid
 		order.isPaid = true;

@@ -56,21 +56,7 @@ const Header = () => {
                   )}
                 </Nav.Link>
               </LinkContainer>
-              { userInfo ? (
-                <NavDropdown title={userInfo.name} id="userName">
-                  <LinkContainer to="/profile">
-                    <NavDropdown.Item><FaUser /> Profile</NavDropdown.Item>
-                  </LinkContainer>
-                    <NavDropdown.Item onClick={logoutHandler}><FaSignOutAlt /> Logout</NavDropdown.Item>
-                </NavDropdown>
-              ) : (
-                <LinkContainer to="/login">
-                  <Nav.Link>
-                    <FaUser /> Sign In
-                  </Nav.Link>
-                </LinkContainer>
-              )}
-              {userInfo && userInfo.isAdmin && (
+              {userInfo && userInfo.role === "admin" && (
                 <NavDropdown title="Admin" id="adminmenu">
                   <LinkContainer to="/admin/productlist">
                     <NavDropdown.Item>Products</NavDropdown.Item>
@@ -82,6 +68,27 @@ const Header = () => {
                     <NavDropdown.Item>Orders</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
+              )}
+              {userInfo && (userInfo.role === "admin" || userInfo.role === "manufacturer") && (
+                <NavDropdown title="Manufacturer" id="manufacturermenu">
+                  <LinkContainer to="/admin/preorderlist">
+                    <NavDropdown.Item>Orders</NavDropdown.Item>
+                  </LinkContainer>
+                </NavDropdown>
+              )}
+              { userInfo ? (
+                <NavDropdown title={`${userInfo.name.slice(0,20)}${userInfo.name.length > 20 ? "..." : ""}`} id="userName">
+                  <LinkContainer to="/profile">
+                    <NavDropdown.Item><FaUser /> Profile</NavDropdown.Item>
+                  </LinkContainer>
+                    <NavDropdown.Item onClick={logoutHandler}><FaSignOutAlt /> Logout</NavDropdown.Item>
+                </NavDropdown>
+              ) : (
+                <LinkContainer to="/login">
+                  <Nav.Link>
+                    <FaUser /> Sign In
+                  </Nav.Link>
+                </LinkContainer>
               )}
             </Nav>
           </Navbar.Collapse>

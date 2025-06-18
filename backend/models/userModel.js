@@ -20,16 +20,15 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  isAdmin:{
-    type: Boolean,
-    required: true,
-    default: false
+  role: {
+    type: String,
+    default: "customer"
   },
-  isManufacturer:{
-    type: Boolean,
+  lastLoggedIn: {
+    type: Date,
     required: true,
-    default: false
-  },
+    default: new Date()
+  }
 },{
   timestamps: true
 });

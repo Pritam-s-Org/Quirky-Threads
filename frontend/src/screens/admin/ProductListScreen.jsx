@@ -49,7 +49,7 @@ const ProductListScreen = () => {
         <Col>
           <h1>All Products</h1>
         </Col>
-        {userInfo && userInfo.isAdmin && (
+        {userInfo && userInfo.role === "admin" && (
           <Col className="text-end">
             <Button className="btn-sm btn-dark m-3" onClick={createProductHandler}>
               <FaEdit /> Create Product
@@ -80,7 +80,7 @@ const ProductListScreen = () => {
                   <td>₹{product.price}</td>
                   <td className="text-truncate">{product.tags.join(", ")}</td>
                   <td className="text-truncate">{product.variants?.map(variant => variant.variantName).join(", ")}</td>
-                  {userInfo && userInfo.isAdmin && (
+                  {userInfo && userInfo.role === "admin" && (
                     <td>
                       <LinkContainer to={`/admin/products/${product._id}/edit`}>
                         <Button variant="light" className="btn-sm mx-2">
