@@ -57,9 +57,7 @@ const ProductListScreen = () => {
           </Col>
         )}
       </Row>
-      {loadingCreate && <Loader />}
-      {loadingDelete && <Loader />}
-      {isLoading ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
+      {(isLoading || loadingCreate || loadingDelete) ? <Loader /> : error ? <Message variant="danger">{error}</Message> : (
         <>
           <Table striped hover responsive className="table-sm">
             <thead>
@@ -67,8 +65,8 @@ const ProductListScreen = () => {
                 <th>ID</th>
                 <th>NAME</th>
                 <th>PRICE</th>
-                <th>CATEGORY</th>
-                <th>STOCK COUNT</th>
+                <th>TAGS</th>
+                <th>VARIANTS</th>
                 <th></th>
               </tr>
             </thead>
@@ -80,8 +78,8 @@ const ProductListScreen = () => {
                   </td>
                   <td>{product.name}</td>
                   <td>₹{product.price}</td>
-                  <td>{product.category}</td>
-                  <td>{product.countInStock}</td>
+                  <td className="text-truncate">{product.tags.join(", ")}</td>
+                  <td className="text-truncate">{product.variants?.map(variant => variant.variantName).join(", ")}</td>
                   {userInfo && userInfo.isAdmin && (
                     <td>
                       <LinkContainer to={`/admin/products/${product._id}/edit`}>

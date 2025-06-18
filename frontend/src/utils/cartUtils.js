@@ -7,7 +7,7 @@ export const updateCart = (state) => {
   state.itemsPrice = addDecimals(state.cartItems.reduce((acc, item) => acc + item.price * item.qty, 0))
   //Calculate shipping price (if applicable)
   state.shippingPrice = addDecimals(state.itemsPrice >= 400 || state.paymentMethod === "Razorpay" ? 0 : 50)
-  //Calculate the razorpay transaction fee (3% gst)
+  //Calculate the razorpay transaction fee (3% transaction fee)
   state.secureTransactionFee = addDecimals( state.paymentMethod === "Razorpay" ? Number((0.03 * state.itemsPrice).toFixed(2)) : 0)
   //Calculate the discount amount for pre-paid orders
   state.discount = addDecimals(state.paymentMethod === "Razorpay" ? Number((0.10 * state.itemsPrice).toFixed(2)) : 0)
