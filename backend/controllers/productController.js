@@ -1,5 +1,5 @@
 import asyncHandler from "../middleware/asyncHandler.js";
-import Product from "../models/productModel.js";
+import Product, {ProductView} from "../models/productModel.js";
 
 //@desc   Fetch all Products
 //@route  GET /api/products
@@ -16,7 +16,7 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
   : {};
 
   const count = await Product.countDocuments({...keyword})
-  const products = await Product.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
+  const products = await ProductView.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
   
   res.json({products, page, pages: Math.ceil(count/pageSize)})
 })
@@ -25,7 +25,7 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
 //@route  GET /api/products/:id
 //@access Public
 const getProductById = asyncHandler(async (req, res)=>{
-  const product = await Product.findById(req.params.id);
+  const product = await ProductView.findById(req.params.id);
   
     if (product) {
       return res.json(product);
@@ -123,7 +123,7 @@ const createProductReview = asyncHandler (async (req, res)=>{
 //@route  GET /api/products/top
 //@access Public
 const getTopProducts = asyncHandler(async (req, res)=>{
-  const products = await Product.find({}).sort({rating:-1}).limit(6);
+  const products = await ProductView.find({totalInStock : {$gt: 0}}).sort({rating:-1}).limit(6);
   res.status(200).json(products)
 })
 

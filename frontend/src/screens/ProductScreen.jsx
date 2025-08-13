@@ -3,14 +3,14 @@ import { Link, useNavigate, useParams } from "react-router-dom";
 import { Form, Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap";
 import { FaArrowCircleLeft, FaCartPlus } from "react-icons/fa"
 import { useDispatch, useSelector } from "react-redux";
-import Rating from "../components/Rating";
+import { toast } from "react-toastify";
+import { getContrastTextColor } from "../constants.js";
+import { addToCart } from "../slicers/cartSlice.js";
 import { useGetProductDetailsQuery, useCreateReviewMutation } from "../slicers/productApiSlice.js";
+import Rating from "../components/Rating";
 import Loader from "../components/Loader.jsx";
 import Message from "../components/Message.jsx";
 import Meta from "../components/Meta.jsx";
-import { addToCart } from "../slicers/cartSlice.js";
-import { toast } from "react-toastify";
-import { getContrastTextColor } from "../constants.js";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -46,15 +46,16 @@ const ProductScreen = () => {
     navigate("/cart")
   }
 
+  const preOrderHandler = ()=>{
+    console.log("Pre order pressed");
+    
+  }
+
   const submitHandler = async (e) => {
     e.preventDefault()
 
     try {
-      await createReview({
-        productId,
-        rating,
-        comment
-      }).unwrap()
+      await createReview({productId, rating, comment}).unwrap()
       refetch()
       toast.success("Review Submitted!")
       setRating(0)
@@ -63,10 +64,6 @@ const ProductScreen = () => {
       toast.error(err?.data?.message || err.error)
     }
   }
-
-  useEffect(()=>{
-    console.log(countInStock);
-  }, [size, countInStock])
 
   return (
     <>
@@ -110,7 +107,7 @@ const ProductScreen = () => {
                 <ListGroup.Item>
                   <Row className="my-2">
                     {product.variants.map( variant =>
-                      <Row className="d-grid gap-2 col-4 mx-auto">
+                      <Row className="d-grid gap-2 col-4 mx-auto" key={variant._id}>
                         <Button 
                           style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} 
                           onClick={()=>setSelectedVariant(variant)}
@@ -122,6 +119,9 @@ const ProductScreen = () => {
                       </Row>
                     )}
                   </Row>
+                </ListGroup.Item>
+                <ListGroup.Item>
+                  {product.totalSold} people have brought this product.
                 </ListGroup.Item>
               </ListGroup>
               <ListGroup>
@@ -137,7 +137,6 @@ const ProductScreen = () => {
                       <Col><strong>₹ {product.price}</strong></Col>
                     </Row>
                   </ListGroup.Item>
-                  
                   <ListGroup.Item>
                     <Row>
                       <Col>Status:</Col>
@@ -165,30 +164,40 @@ const ProductScreen = () => {
                     </ListGroup.Item>
                   )}
                   <ListGroup.Item>
-                    {countInStock?
-                      <Col>
+                    <Col>
+                      <Row className="my-2">
+                        <Button
+                          className="btn btn-warning"
+                          type="button"
+                          disabled={!countInStock}
+                          onClick={addToCartHandler}
+                        ><u><FaCartPlus size="1.5rem" /> <b>Add to Cart</b></u></Button>
+                      </Row>
+                      {/* {userInfo && 
                         <Row className="my-2">
                           <Button
-                            className="btn btn-warning"
+                            className="btn btn-warning py-0"
                             type="button"
                             disabled={!countInStock}
-                            onClick={addToCartHandler}
-                          ><u><FaCartPlus size="1.5rem" /> <b>Add to Cart</b></u></Button>
+                            style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "2rem", color: "maroon" }}
+                            // onClick={addToCartHandler}
+                          ><u>Order Now!!</u></Button>
                         </Row>
-                        {/* {userInfo && 
-                          <Row className="my-2">
-                            <Button
-                              className="btn btn-warning py-0"
-                              type="button"
-                              disabled={!countInStock}
-                              style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "2rem", color: "maroon" }}
-                              // onClick={addToCartHandler}
-                            ><u>Order Now!!</u></Button>
-                          </Row>
-                        } */}
-                      </Col> : <Message>Please wait for the next stock update</Message>
-                    }
+                      } */}
+                    </Col> 
+                    {!countInStock && <Message>{product?.totalInStock ? "Out of stock for the selected variant/size" : "Please wait for the next stock update" }</Message>}
                   </ListGroup.Item>
+                  {!countInStock && <ListGroup.Item>
+                    <Row>
+                      <Button
+                        className="btn btn-warning mx-auto"
+                        type="button"
+                        onClick={preOrderHandler}
+                        ><u><FaCartPlus size="1.5rem" /> <b>Pre Order</b></u>
+                      </Button>
+                    </Row>
+                    <p>(with extra 5% pre booking charge)</p>
+                  </ListGroup.Item>}
                 </ListGroup>
               </Card>
             </Col>
@@ -196,7 +205,7 @@ const ProductScreen = () => {
           <Row className="review">
             <Col md={6}>
               <h2>Reviews</h2>
-              {product.reviews.length === 0 && <Message>No reviewes on this product yet.</Message>}
+              {!product.reviews.length && <Message>Be the first person to review this product.</Message>}
               <ListGroup variant="flush">
                 {product.reviews.map(review => (
                   <ListGroup.Item key={review._id}>
@@ -229,16 +238,16 @@ const ProductScreen = () => {
                           <Form.Label>Comment</Form.Label>
                           <Form.Control
                             as="textarea"
+                            placeholder="Add your comment (max 250 character)"
                             value={comment}
-                            onChange={(e) => setComment(e.target.value)}
-                          />
+                            onChange={(e) => setComment(e.target.value.slice(0,250))}
+                          />{comment && <p style={{color: `${250-comment.length > 20? "black" : "red"}`, fontSize: "0.8rem", textAlign: "end"}}>characters left {250 - comment.length}</p>}
                         </Form.Group>
                         <Button
                           disabled={isReviewLoading}
                           type="submit"
                           variant="dark"
-                        >Submit
-                        </Button>
+                        >Submit</Button>
                       </Form>
                     ) : (
                       <Message>

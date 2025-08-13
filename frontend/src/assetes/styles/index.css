@@ -91,3 +91,7 @@ table th {
 .custom-navbar .nav-link:hover {
   color: #ffd700; /* Example: Gold on hover */
 }
+
+.grey-overlay {
+  background-color: rgba(128, 128, 128, 0.6);
+}

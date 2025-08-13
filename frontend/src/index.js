@@ -19,7 +19,7 @@ import LoginScreen from "./screens/LoginScreen";
 import RegisterScreen from "./screens/RegisterScreen";
 import ShippingScreen from "./screens/ShippingScreen";
 import PrivateRoute from "./components/PrivateRoute";
-import AdminRoute from "./components/AdminRoute";
+import {AdminRoute, ManufacturerRoute} from "./components/AdminRoute";
 import PaymentScreen from "./screens/PaymentScreen";
 import PlaceOrdersScreen from "./screens/PlaceOrdersScreen";
 import OrderScreen from "./screens/OrderScreen";

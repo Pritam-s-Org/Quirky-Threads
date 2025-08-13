@@ -66,4 +66,11 @@ const productSchema = new mongoose.Schema(
 
 const Product = mongoose.model("Product", productSchema);
 
+const ProductView = mongoose.model(
+  "ProductView",
+  new mongoose.Schema({}, { strict: false }),
+  "productView"
+);
+
 export default Product;
+export { ProductView }

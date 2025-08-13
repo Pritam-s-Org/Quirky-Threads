@@ -6,10 +6,9 @@ const generateToken = (res, userId)=>{
     res.cookie("qrt_secure_session_token", token, {
       httpOnly: true,
       secure: process.env.NODE_ENV !== "development",
-      sameSite: "strict",
-      maxAge: 5 * 24 * 3600 * 1000 //1 Day = 1 * 24hours = 144*3600*1000ms
+      sameSite: "Lax" || "Strict" , // "None" for cross-site cookies, "Strict" for same-site cookies, "Lax" for same-site with some exceptions
+      maxAge: 5 * 24 * 3600 * 1000 //1 Day = 1 * 24hours = 24*3600*1000ms
     })
-
 }
 
 export default generateToken
