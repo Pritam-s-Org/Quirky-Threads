@@ -15,6 +15,7 @@ const LoginScreen = () => {
   const [email, setEmail] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
+  const [loggedIn, setLoggedIn] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,16 +37,13 @@ const LoginScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault()
     try {
-      const res = await login({ email, password }).unwrap()
+      const res = await login({ email, password, loggedIn }).unwrap()
       dispatch(setCredentials({ ...res }))
       navigate(redirect)
     } catch (err) {
       toast.error(err?.data?.message || err.error)
     }
   }
-  const toggleShowPassword = () => {
-    setShowPassword(!showPassword);
-  };
 
   return (
     <Card>
@@ -72,7 +70,7 @@ const LoginScreen = () => {
                 onChange={(e) => setPassword(e.target.value)}
               />
               <span
-                onClick={toggleShowPassword}
+                onClick={()=> setShowPassword(!showPassword)}
                 style={{
                   position: "absolute",
                   right: "10px",
@@ -86,8 +84,15 @@ const LoginScreen = () => {
             </div>
             Forgot Password? <Link to="/forgot">Reset Here</Link>
           </Form.Group>
+          <div className="form-check">
+            <input className="form-check-input" type="checkbox" value="" id="stayLoggedIn" checked={loggedIn} onChange={()=> setLoggedIn(!loggedIn)} />
+            <label className="form-check-label" htmlFor="stayLoggedIn">
+              Stay Logged in until I logout.
+            </label>
+            {!loggedIn && <p style={{color: "maroon", fontSize: "0.8rem"}}>You will be logged out autometically after 5 days.</p>}
+          </div>
           <Button type="submit" variant="warning" className="mt-4 d-grid mx-auto col-6" disabled={isLoading}>
-            Sign In
+            <b>Sign In</b>
           </Button>
           {isLoading && <Loader />}
         </Form>

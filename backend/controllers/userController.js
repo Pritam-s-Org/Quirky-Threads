@@ -88,11 +88,12 @@ const verifyOtp = asyncHandler (async (req, res)=>{
 //@route  POST /api/users/login
 //@access Public
 const authUser = asyncHandler (async (req, res)=>{
-  const { email, password }= req.body;
+  const { email, password, loggedIn }= req.body;
   const user = await User.findOne({ email })
 
-  if (user && (await user.checkPwd(password)) ){
-    generateToken(res, user._id);
+  if (user && (await user.checkPwd(password)) ) {
+    generateToken(res, user._id, Boolean(loggedIn));
+    const previousSession = user.lastLoggedIn;
     user.lastLoggedIn = new Date();
 
     try {
@@ -103,7 +104,9 @@ const authUser = asyncHandler (async (req, res)=>{
         mobileNo: updatedUser.mobileNo,
         name: updatedUser.name,
         role: updatedUser.role,
-        loggedInTime: updatedUser.lastLoggedIn.toISOString()
+        loggedInTime: updatedUser.lastLoggedIn.toISOString(),
+        previousSession: previousSession.toISOString(),
+        loginExpire : new Date(new Date(updatedUser.lastLoggedIn).getTime() + (loggedIn ? 10 * 365 * 24 * 3600 * 1000 : 5 * 24 * 3600 * 1000)).toISOString()
       })
     } catch (err) {
       res.status(400)
@@ -149,7 +152,9 @@ const registerUser = asyncHandler (async (req, res)=>{
         email: user.email,
         mobileNo: user.mobileNo,
         role: user.role,
-        loggedInTime: user.lastLoggedIn.toISOString()
+        loggedInTime: user.lastLoggedIn.toISOString(),
+        previousSession: user.lastLoggedIn.toISOString(),
+        loginExpire : new Date(new Date(updatedUser.lastLoggedIn).getTime() + 5 * 24 * 3600 * 1000).toISOString()
       })
     } else {
       res.status(400)

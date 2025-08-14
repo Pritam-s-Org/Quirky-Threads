@@ -193,13 +193,13 @@ const RegisterScreen = () => {
               style={{color: "red"}}
             >Your Password isn't matching with entered password</h6>
           </Form.Group>
-          <Button type="submit" variant="warning" className="mt-2" disabled={isLoading}>
-            Register
+          <Button type="submit" variant="warning" className="mt-4 d-grid mx-auto col-6" disabled={isLoading}>
+            <b>Sign Up</b>
           </Button>
           {isLoading && <Loader />}
         </Form>
         <Row className="py-3">
-          <Col>
+          <Col className="text-center">
             Already have an account? <Link to={redirect ? `/login?redirect=${redirect}` : "/login"}>Login here</Link>
           </Col>
         </Row>

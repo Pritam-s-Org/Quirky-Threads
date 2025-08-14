@@ -188,7 +188,14 @@ const ProfileScreen = () => {
         </Form>
       </Col>
       <Col md={9}>
-        <h2>My Orders</h2>
+        <Row>
+          <Col>
+            <h2>My Orders</h2>
+          </Col>
+          <Col className="text-end">
+            <p>Last Logged In: <u>{dateFormatting(userInfo?.previousSession)}</u></p>
+          </Col>
+        </Row>
         {isLoading ?
           <Loader />
           : error ? (
@@ -218,7 +225,7 @@ const ProfileScreen = () => {
                       <Link className="text-decoration-none" to={`/order/${order._id}`}><span title={order._id}>{order.orderId}</span></Link>
                     </td>
                     <td>{dateFormatting(order.createdAt).substring(0, 10)}</td>
-                    <td className="fw-semibold" style={{color: "black"}}>{order.totalPrice}</td>
+                    <td className="fw-semibold" style={{color: "black"}}>{order.totalPrice.toFixed(2)}</td>
                     <td>
                       {order.isPaid ? (
                         dateFormatting(order.paidAt).substring(0, 10)
