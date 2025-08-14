@@ -12,7 +12,7 @@ import { setCredentials } from "../slicers/authSlice.js"
 import { toast } from "react-toastify"
 
 const LoginScreen = () => {
-  const [email, setEmail] = useState("")
+  const [loginId, setLoginId] = useState("")
   const [password, setPassword] = useState("")
   const [showPassword, setShowPassword] = useState(false);
   const [loggedIn, setLoggedIn] = useState(false);
@@ -37,7 +37,7 @@ const LoginScreen = () => {
   const submitHandler = async (e) => {
     e.preventDefault()
     try {
-      const res = await login({ email, password, loggedIn }).unwrap()
+      const res = await login({ loginId, password, loggedIn }).unwrap()
       dispatch(setCredentials({ ...res }))
       navigate(redirect)
     } catch (err) {
@@ -51,13 +51,13 @@ const LoginScreen = () => {
       <FormContainer>
         <h1>Sign In</h1>
         <Form onSubmit={submitHandler}>
-          <Form.Group controlId="email" className="my-3">
-            <Form.Label>Email Address</Form.Label>
+          <Form.Group controlId="loginId" className="my-3">
+            <Form.Label>Email Address / Mobile No.</Form.Label>
             <Form.Control
-              type="email"
-              placeholder="example@email.com"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
+              type="text"
+              placeholder="example@email.com or 9191919191"
+              value={loginId}
+              onChange={(e) => setLoginId(e.target.value)}
             ></Form.Control>
           </Form.Group>
           <Form.Group controlId="password" className="my-3">

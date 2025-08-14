@@ -88,8 +88,13 @@ const verifyOtp = asyncHandler (async (req, res)=>{
 //@route  POST /api/users/login
 //@access Public
 const authUser = asyncHandler (async (req, res)=>{
-  const { email, password, loggedIn }= req.body;
-  const user = await User.findOne({ email })
+  const { loginId, password, loggedIn }= req.body;
+  const user = await User.findOne({   
+    $or: [
+      { email: loginId },
+      { mobileNo: loginId }
+    ]
+  })
 
   if (user && (await user.checkPwd(password)) ) {
     generateToken(res, user._id, Boolean(loggedIn));
