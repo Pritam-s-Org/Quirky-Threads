@@ -10,6 +10,7 @@ import Meta from "../components/Meta.jsx";
 import { useCreateOrderMutation, useVerifyOrderStockMutation, useVerifyRazorpayPaymentMutation} from "../slicers/orderApiSlices";
 import { clearCartItems } from "../slicers/cartSlice";
 import brandLogo from "../assetes/Brand.png"
+import { FaEdit } from "react-icons/fa";
 
 const PlaceOrdersScreen = () => {
 	const navigate = useNavigate();
@@ -127,16 +128,25 @@ const PlaceOrdersScreen = () => {
 					<ListGroup>
 						<ListGroup.Item>
 							<h2>Shipping</h2>
-							<p>
-								<strong>Address: </strong>
-								{cart.shippingAddress.address}, {cart.shippingAddress.landmark}.
-								<br />{cart.shippingAddress.city}, {cart.shippingAddress.district}, {cart.shippingAddress.pinCode}
-							</p>
+							<Row>
+								<Col md={10} lg={11} sm={11}>
+									<strong>Address: </strong>
+									{cart.shippingAddress.address}, {cart.shippingAddress.landmark}.
+									<br />{cart.shippingAddress.city}, {cart.shippingAddress.district}, {cart.shippingAddress.pinCode}
+								</Col>
+								<Col md={2} lg={1} sm={1}>
+									<FaEdit size={22} onClick={() => navigate("/shipping")}/>
+								</Col>
+							</Row>
 						</ListGroup.Item>
 						<ListGroup.Item>
 							<h2>Payment Method</h2>
-							<strong>Method: </strong>
-							{cart.paymentMethod}
+							<Row>
+								<Col md={10} lg={11} sm={11}><strong>Method: </strong>{cart.paymentMethod}</Col>
+								<Col md={2} lg={1} sm={1}>
+									<FaEdit size={22} onClick={() => navigate("/payment")}/>
+								</Col>
+							</Row>
 						</ListGroup.Item>
 						<ListGroup.Item>
 							<h2>Order Items</h2>

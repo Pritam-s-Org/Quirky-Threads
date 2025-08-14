@@ -173,7 +173,8 @@ const ProductScreen = () => {
                           onClick={addToCartHandler}
                         ><u><FaCartPlus size="1.5rem" /> <b>Add to Cart</b></u></Button>
                       </Row>
-                      {/* {userInfo && 
+                      {/***************** Buy Now / Order Now Button *******************
+                      {userInfo && 
                         <Row className="my-2">
                           <Button
                             className="btn btn-warning py-0"
@@ -187,6 +188,7 @@ const ProductScreen = () => {
                     </Col> 
                     {!countInStock && <Message>{product?.totalInStock ? "Out of stock for the selected variant/size" : "Please wait for the next stock update" }</Message>}
                   </ListGroup.Item>
+                  {/************* Pre Order Item  Button *****************
                   {!countInStock && <ListGroup.Item>
                     <Row>
                       <Button
@@ -197,7 +199,7 @@ const ProductScreen = () => {
                       </Button>
                     </Row>
                     <p>(with extra 5% pre booking charge)</p>
-                  </ListGroup.Item>}
+                  </ListGroup.Item>} */}
                 </ListGroup>
               </Card>
             </Col>
