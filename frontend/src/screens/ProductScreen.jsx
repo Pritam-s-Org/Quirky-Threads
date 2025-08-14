@@ -46,10 +46,9 @@ const ProductScreen = () => {
     navigate("/cart")
   }
 
-  const preOrderHandler = ()=>{
-    console.log("Pre order pressed");
-    
-  }
+  // const preOrderHandler = ()=>{
+  //   console.log("Pre order pressed");
+  // }
 
   const submitHandler = async (e) => {
     e.preventDefault()

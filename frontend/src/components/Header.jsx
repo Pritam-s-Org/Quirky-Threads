@@ -71,7 +71,7 @@ const Header = () => {
               )}
               {userInfo && (userInfo.role === "admin" || userInfo.role === "manufacturer") && (
                 <NavDropdown title="Manufacturer" id="manufacturermenu">
-                  <LinkContainer to="/admin/preorderlist">
+                  <LinkContainer to="/manufacturer/preorderlist">
                     <NavDropdown.Item>Orders</NavDropdown.Item>
                   </LinkContainer>
                 </NavDropdown>
