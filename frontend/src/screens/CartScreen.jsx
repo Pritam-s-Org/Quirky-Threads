@@ -17,6 +17,7 @@ import { addToCart, removeFromCart } from "../slicers/cartSlice.js";
 import { useVerifyOrderStockMutation } from "../slicers/orderApiSlices.js";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader.jsx";
+import { removeBuyingItem } from "../slicers/authSlice.js";
 
 const CartScreen = () => {
 	const [stockStatus, setStockStatus] = useState(null);
@@ -46,6 +47,7 @@ const CartScreen = () => {
 
 	const handleCheckoutClick = async () => {
     try {
+			userInfo.buyingItem && dispatch(removeBuyingItem());
       setStockStatus(null)
       const res = await productStatus(orderItems).unwrap();
       setStockStatus(res);

@@ -159,7 +159,7 @@ const registerUser = asyncHandler (async (req, res)=>{
         role: user.role,
         loggedInTime: user.lastLoggedIn.toISOString(),
         previousSession: user.lastLoggedIn.toISOString(),
-        loginExpire : new Date(new Date(updatedUser.lastLoggedIn).getTime() + 5 * 24 * 3600 * 1000).toISOString()
+        loginExpire : new Date(new Date(user.lastLoggedIn).getTime() + 5 * 24 * 3600 * 1000).toISOString()
       })
     } else {
       res.status(400)

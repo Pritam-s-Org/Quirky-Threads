@@ -1,7 +1,7 @@
 import crypto from "crypto";
 import asyncHandler from "../middleware/asyncHandler.js";
 import Order from "../models/oderModel.js";
-import Product from "../models/productModel.js";
+import Product, { ProductView } from "../models/productModel.js";
 import razorpay from "../config/razorpay.js";
 import mongoose from "mongoose";
 
@@ -83,6 +83,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 		secureTransactionFee,
 		shippingPrice,
 		discount,
+		preOrderFee,
 		totalPrice,
 	} = req.body;
 
@@ -106,6 +107,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			secureTransactionFee,
 			shippingPrice,
 			discount,
+			preOrderFee: preOrderFee,
 			totalPrice,
 			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
 		});
@@ -113,32 +115,35 @@ const addOrderItems = asyncHandler(async (req, res) => {
 		try {
 			await Promise.all(
 				orderItems.map(async (item) => {
-					const product = await Product.findById(item._id);
+					const product = await ProductView.findById(item._id);
 					if (!product) {
 						res.status(404);
 						throw new Error("Product Not Found.");
 					}
-					if (product.countInStock < item.qty) {
+					if (product.totalInStock < item.qty) {
 						res.status(400);
-						throw new Error(`Product '${product.name}' is out of stock.`);
+						throw new Error(`Product '${product.name}' is currently out of stock.`);
 					}
 				})
 			);
 
-			const createdOrder = await order.save();
-
-			await Promise.all(
+			(preOrderFee && paymentMethod === "RazorPay") && await Promise.all(
 				orderItems.map(async (item) => {
 					const product = await Product.findById(item._id);
 					if (!product) throw new Error("Product not found.");
 					const variant = product.variants.find((v) => v.variantName === item.variants.variantName);
-					if (!variant) throw new Error("Variant could not found.");;
+					if (!variant) throw new Error("Variant could not found.");
 					const sizeObj = variant.sizes.find((s) => s.size === item.variants.sizes.size);
-					if (!sizeObj) throw new Error("Size counld not found.");;
+					if (!sizeObj) throw new Error("Size counld not found.");
+					if (sizeObj.stock < item.qty) {
+						res.status(400);
+						throw new Error("Selected item is fully sold out already.");
+					}
 					sizeObj.stock -= item.qty;
 					await product.save();
 				})
 			);
+			const createdOrder = await order.save();
 
 			if (paymentMethod === "COD") {
 				res.status(201).json({ data: createdOrder });
@@ -309,11 +314,19 @@ const updateOrderToDelivered = asyncHandler(async (req, res) => {
 	}
 });
 
-//@desc   Update order to delivered
+//@desc   Get all the orders for admin
 //@route  GET /api/orders
 //@access Private/Admin
 const getOrders = asyncHandler(async (req, res) => {
 	const orders = await Order.find({}).populate("user", "id name");
+	res.status(200).json(orders);
+});
+
+//@desc   Get pre-ordered items for manufacturer
+//@route  GET /api/orders
+//@access Private/Admin or Manufacturer
+const preOrderedItems =asyncHandler(async (req, res) => {
+	const orders = await Order.find({preOrderFee: {$exists: true}}).populate("user", "id name");
 	res.status(200).json(orders);
 });
 
@@ -326,4 +339,5 @@ export {
 	updateOrderToPaid,
 	updateOrderToDelivered,
 	getOrders,
+	preOrderedItems,
 };

@@ -53,7 +53,7 @@ const ProfileScreen = () => {
       try {
         const res = await updateProfile({ _id: userInfo._id, name, email, mobileNo, password }).unwrap()
         !password && !email ? dispatch(setCredentials({ ...res })) :dispatch(logout())
-        toast.success(`Profile Updated Successfully.\n${(password || email) && `Please login again with your new ${password ? "password" : "email"}`}`)
+        toast.success(`Profile Updated Successfully.\n "Please login again with your updated login details"}`)
       } catch (err) {
         toast.error(err?.data?.message || err?.error)
       }

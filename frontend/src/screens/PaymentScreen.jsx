@@ -7,6 +7,7 @@ import FormContainer from "../components/FormContainer"
 import CheckoutSteps from "../components/CheckoutSteps"
 import Meta from "../components/Meta.jsx"
 import { savePaymentMethod } from "../slicers/cartSlice"
+import { updatePaymentMethod } from "../slicers/authSlice.js"
 
 const PaymentScreen = () => {
   const [paymentMethod, setPaymentMethod] = useState("Razorpay")
@@ -14,6 +15,7 @@ const PaymentScreen = () => {
   const dispatch = useDispatch()
   const navigate = useNavigate()
 
+  const { userInfo } = useSelector((state) => state.auth)
   const cart = useSelector((state) => state.cart)
   const { shippingAddress } = cart
 
@@ -25,6 +27,7 @@ const PaymentScreen = () => {
 
   const submitHandler = (e) => {
     e.preventDefault()
+    userInfo?.buyingItem?.paymentMethod && dispatch(updatePaymentMethod(paymentMethod));
     dispatch(savePaymentMethod(paymentMethod))
     navigate("/placeorder")
   }

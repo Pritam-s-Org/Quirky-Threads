@@ -11,6 +11,7 @@ import Rating from "../components/Rating";
 import Loader from "../components/Loader.jsx";
 import Message from "../components/Message.jsx";
 import Meta from "../components/Meta.jsx";
+import { removeBuyingItem, setBuyingItem } from "../slicers/authSlice.js";
 
 const ProductScreen = () => {
   const { id: productId } = useParams();
@@ -27,6 +28,7 @@ const ProductScreen = () => {
   const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId)
   const [createReview, { isLoading: isReviewLoading }] = useCreateReviewMutation()
   const { userInfo } = useSelector((state) => state.auth)
+  const cart = useSelector((state) => state.cart);
 
   useEffect(()=>{
     setSelectedVariant(product?.variants[0])
@@ -38,17 +40,27 @@ const ProductScreen = () => {
   }, [selectedVariant, size])
 
   const addToCartHandler = () => {
+    userInfo.buyingItem && dispatch(removeBuyingItem());
     dispatch(addToCart({ 
       ...product, 
       variants: {...selectedVariant, sizes : selectedVariant?.sizes?.find(item => item.size === size)},
       keyId: product._id + selectedVariant?.sizes?.find(item => item.size === size)._id,
-      qty:1 }))
+      qty:1 })
+    );
     navigate("/cart")
   }
 
-  // const preOrderHandler = ()=>{
-  //   console.log("Pre order pressed");
-  // }
+  const directBuyHandler = (actionName)=>{
+    dispatch(setBuyingItem({ 
+      ...product,
+      actionItem: actionName,
+      paymentMethod: cart.paymentMethod,
+      variants: {...selectedVariant, sizes : selectedVariant?.sizes?.find(item => item.size === size)},
+      keyId: product._id + selectedVariant?.sizes?.find(item => item.size === size)._id,
+      qty:1 })
+    );
+    navigate("/placeorder")
+  }
 
   const submitHandler = async (e) => {
     e.preventDefault()
@@ -172,33 +184,36 @@ const ProductScreen = () => {
                           onClick={addToCartHandler}
                         ><u><FaCartPlus size="1.5rem" /> <b>Add to Cart</b></u></Button>
                       </Row>
-                      {/***************** Buy Now / Order Now Button *******************
-                      {userInfo && 
-                        <Row className="my-2">
-                          <Button
-                            className="btn btn-warning py-0"
-                            type="button"
-                            disabled={!countInStock}
-                            style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "2rem", color: "maroon" }}
-                            // onClick={addToCartHandler}
-                          ><u>Order Now!!</u></Button>
-                        </Row>
-                      } */}
                     </Col> 
-                    {!countInStock && <Message>{product?.totalInStock ? "Out of stock for the selected variant/size" : "Please wait for the next stock update" }</Message>}
+                    {!countInStock && <Message>{product?.totalInStock ? "Out of stock for the selected variant/size" : "Please wait for the next stock update"}, 
+                      <br />You can still order this item by using the 'Pre Order'* button.<br />(T&C Apply)</Message>}
                   </ListGroup.Item>
-                  {/************* Pre Order Item  Button *****************
-                  {!countInStock && <ListGroup.Item>
-                    <Row>
-                      <Button
-                        className="btn btn-warning mx-auto"
-                        type="button"
-                        onClick={preOrderHandler}
-                        ><u><FaCartPlus size="1.5rem" /> <b>Pre Order</b></u>
-                      </Button>
-                    </Row>
-                    <p>(with extra 5% pre booking charge)</p>
-                  </ListGroup.Item>} */}
+                  {/************* Pre Order Item  Button *****************/}
+                  <ListGroup.Item>
+                    {!countInStock ?
+                      <Col>
+                        <Row>
+                          <Button
+                            className="btn btn-warning mx-auto"
+                            type="button"
+                            onClick={()=>directBuyHandler("preOrder")}
+                            ><u><FaCartPlus size="1.5rem" /> <b>Pre Order</b></u>*
+                          </Button>
+                        </Row>
+                        <p style={{color: "maroon", fontSize: "0.8rem"}} className="mx-auto">*pre booking charge applicable for COD order</p>
+                      </Col> : userInfo &&
+                      <Row className="my-2">
+                        {/***************** Buy Now / Order Now Button *******************/}
+                        <Button
+                          className="btn btn-warning py-0"
+                          type="button"
+                          disabled={!countInStock}
+                          style={{ fontFamily: "'Racing Sans One', sans-serif", fontSize: "2rem", color: "maroon" }}
+                          onClick={()=> directBuyHandler("buyNow")}
+                        ><u>Order Now!!</u></Button>
+                      </Row>
+                    }
+                  </ListGroup.Item>
                 </ListGroup>
               </Card>
             </Col>

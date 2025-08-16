@@ -77,7 +77,7 @@ const Header = () => {
                 </NavDropdown>
               )}
               { userInfo ? (
-                <NavDropdown title={`${userInfo.name.slice(0,20)}${userInfo.name.length > 20 ? "..." : ""}`} id="userName">
+                <NavDropdown title={`${userInfo?.name?.slice(0,20)}${userInfo?.name?.length > 20 ? "..." : ""}`} id="userName">
                   <LinkContainer to="/profile">
                     <NavDropdown.Item><FaUser /> Profile</NavDropdown.Item>
                   </LinkContainer>
