@@ -326,8 +326,35 @@ const getOrders = asyncHandler(async (req, res) => {
 //@route  GET /api/orders
 //@access Private/Admin or Manufacturer
 const preOrderedItems =asyncHandler(async (req, res) => {
-	const orders = await Order.find({preOrderFee: {$exists: true}}).select("-shippingAddress -totalPrice -user");
+	const orders = await Order.find({"preOrderFee": {"$exists": true}}).select("-shippingAddress -totalPrice -user");
 	res.status(200).json(orders);
+});
+
+//@desc   Get pre-ordered items for manufacturer
+//@route  GET /api/orders
+//@access Private/Admin or Manufacturer
+const updateOrderToManufactured = asyncHandler(async (req, res) => {
+const order = await Order.findById(req.body.orderId);
+
+	if (!order) {
+		res.status(404);
+		throw new Error("Order not found");
+	}
+
+	if (Object.keys(order.toObject()).includes("preOrderFee")) {
+		if (Object.keys(order.toObject()).includes("mfgDate")) {
+			res.status(400);
+			throw new Error("This order has already been marked as prepared, please check your order item again.")
+		}
+		order.mfgDate = Date.now();
+		const updateOrderDelivery = await order.save();
+		const { shippingAddress, totalPrice, user, ...updatedResponse} = updateOrderDelivery.toObject()
+		
+		res.status(200).json(updatedResponse);
+	} else {
+		res.status(400);
+		throw new Error("This order isn't marked as pre-order item.");
+	}
 });
 
 export {
@@ -340,4 +367,5 @@ export {
 	updateOrderToDelivered,
 	getOrders,
 	preOrderedItems,
+	updateOrderToManufactured,
 };

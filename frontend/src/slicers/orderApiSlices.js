@@ -55,10 +55,17 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    markMfdCompleted:builder.mutation({
+      query: ()=>({
+        url:`${ORDERS_URL}/preorder/`,
+        method: "PUT"
+      })
+    }),
     deliverOrder: builder.mutation({
       query: (orderId)=>({
-        url:`${ORDERS_URL}/${orderId}/deliver`,
-        method: "PUT"
+        url:`${ORDERS_URL}/preorder`,
+        method: "PUT",
+        body: {orderId}
       })
     })
   })

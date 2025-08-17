@@ -1,29 +1,29 @@
 import React from 'react'
 import { Link } from "react-router-dom"
 import { Button, Table } from "react-bootstrap"
+import { toast } from "react-toastify"
 import { FaTimes, FaCheckSquare } from "react-icons/fa"
+import { dateFormatting } from "../../../constants"
+import { useDeliverOrderMutation, useGetPreOrdersQuery } from "../../../slicers/orderApiSlices"
 import Message from "../../../components/Message"
 import Loader from "../../../components/Loader"
 import Meta from "../../../components/Meta"
-import { dateFormatting } from "../../../constants"
-import { useGetPreOrdersQuery } from "../../../slicers/orderApiSlices"
 import AvatarGroup from "../../../components/AvatarGroup"
-import { toast } from "react-toastify"
-import { useState } from "react"
 
 const PreOrdered = () => {
-  const { data: orders, isLoading, error } = useGetPreOrdersQuery();
+  const { data: orders, isLoading, error, refetch } = useGetPreOrdersQuery();
+  const [ deliverOrder, {isLoading: loadingPreparation}] = useDeliverOrderMutation();
 
-  const [mfdCompleted, setMfdCompleted] = useState(false)
-
-  const handleDelivaryMark = () =>{
-    if (window.confirm("By clicking this you're confirming that the production of the t-shirt has been completed.")) {
-      setMfdCompleted(true);
-      toast.info("Now you're viewing the demo functionality, it's going to look like in future after complete development. current status will be reset soon.")
+  const handleDelivaryMark = async (orderId) =>{
+    if (window.confirm("By clicking this you're confirming that the production of the t-shirt has been completed.\n\nAre you confirm about it?")) {
+        const res = await deliverOrder(orderId);
+        if (res && res.data?.mfgDate) {
+          toast.success(`Manufactor Completed marked for order id -\n${res.data.orderId}`)
+        } else {
+          toast.error( res.error?.data?.message || "There's some issue with manufactured marking, however the date of manufacture has been updated on backend.\nPlease report to admin about the issue.")
+        }
+        refetch();
     }
-    setTimeout(() => {
-      setMfdCompleted(false);
-    }, 8000);
   }
 
   return (
@@ -42,7 +42,7 @@ const PreOrdered = () => {
                 <th>Name</th>
                 <th>Color</th>
                 <th>Size</th>
-                <th>Delivery Date</th>
+                <th>Manufacture Date</th>
                 <th>Mark Delivery</th>
               </tr>
             </thead>
@@ -61,14 +61,15 @@ const PreOrdered = () => {
                   <td>{order.orderItems[0].variantColor}</td>
                   <td>{order.orderItems[0].size}</td>
                   <td>
-                    {order.orderItems[0].mfdDate || mfdCompleted ? (
-                      dateFormatting(order.orderItems[0].mfdDate || new Date().toISOString()).substring(0,10)
+                    {order.mfgDate ? (
+                      dateFormatting(order.orderItems[0].mfgDate || new Date().toISOString()).substring(0,10)
                     ) : <FaTimes color="red" size={22}/>}
                   </td>
                   <td>
-                    {order.orderItems[0].mfdDate || mfdCompleted ? (
-                      <FaCheckSquare color="green" size={23}/>
-                    ) : <Button type="button" className="btn btn-outline-primary" variant="outline" onClick={handleDelivaryMark}/>}
+                    {order.mfgDate ? 
+                    <FaCheckSquare color="green" size={23}/>
+                    : loadingPreparation ? <Loader size={23} />
+                    : <Button type="button" className="btn btn-outline-primary" variant="outline" onClick={()=>handleDelivaryMark(order._id)}/>}
                   </td>
                 </tr>
               ))}

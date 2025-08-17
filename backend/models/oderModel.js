@@ -88,6 +88,9 @@ const orderSchema = mongoose.Schema({
   },
   preOrderFee:{
     type: Number
+  },
+  mfgDate: {
+    type: Date
   }
 }, {
   timestamps: true
