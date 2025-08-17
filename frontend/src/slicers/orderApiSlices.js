@@ -49,6 +49,12 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
+    getPreOrders: builder.query({
+      query: ()=>({
+        url: `${ORDERS_URL}/preorder`
+      }),
+      keepUnusedDataFor: 5,
+    }),
     deliverOrder: builder.mutation({
       query: (orderId)=>({
         url:`${ORDERS_URL}/${orderId}/deliver`,
@@ -58,4 +64,4 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
   })
 })
 
-export const { useVerifyOrderStockMutation, useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetMyOrdersQuery, useGetOrdersQuery, useDeliverOrderMutation } = ordersApiSlices
+export const { useVerifyOrderStockMutation, useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetMyOrdersQuery, useGetOrdersQuery, useGetPreOrdersQuery, useDeliverOrderMutation } = ordersApiSlices

@@ -14,7 +14,7 @@ export const dateFormatting = (date) => {
 			hour: "2-digit",
 			minute: "2-digit",
 			hour12: true, // For AM/PM format
-			timeZone: "Asia/Kolkata", // Optional: set to your desired timezone
+			timeZone: "Asia/Kolkata",
 		})
 		.replace(",", " at");
 };

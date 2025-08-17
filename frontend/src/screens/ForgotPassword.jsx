@@ -121,18 +121,19 @@ const ForgotPassword = () => {
 					{sentOtp ? (
 						<Button
 							type="submit"
-							variant="warning"
-							className="mt-2"
-							disabled={isLoading}
+							variant="outline"
+							className="btn-outline-warning mt-4 border-0"
+							disabled={isLoading || !inputRefs.current.map(ref => ref.value).join('').match(/^\d{6}$/)}
               onClick={async (e) => {handleVerify(inputRefs.current.map(ref => ref.value).join(''))}}
 						>
-							Submit
+							<b>Submit</b>
 						</Button>
 					) : (
 						<Button
 							className="btn-outline-warning mt-4 border-0"
 							onClick={async () => handleSendOtp()}
 							disabled={ !email || !email.includes("@") || !email.includes(".") || isverified ||sendingOtp}
+              variant="outline"
 						>
 							<b>Verify</b>
 						</Button>
