@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
 
 const AvatarGroup = ({ avatars = [], maxVisible = 2, size = 50 }) => {
@@ -8,21 +9,22 @@ const AvatarGroup = ({ avatars = [], maxVisible = 2, size = 50 }) => {
   return (
     <div style={{ display: "flex", alignItems: "center" }}>
       {visibleAvatars.map((avatar, index) => (
-        <Image
-          key={index}
-          src={avatar.image}
-          alt={avatar.name}
-          roundedCircle
-          width={size}
-          height={size}
-          style={{
-            border: "1.5px solid #7B8A8B",
-            marginLeft: index === 0 ? 0 : -size / 3,
-            zIndex: visibleAvatars.length - index,
-            objectFit: "cover",
-          }}
-          title={avatar.name}
-        />
+        <Link to={`/product/${avatar.product}`} key={index}>
+          <Image
+            src={avatar.image}
+            alt={avatar.name}
+            roundedCircle
+            width={size}
+            height={size}
+            style={{
+              border: "1.5px solid #7B8A8B",
+              marginLeft: index === 0 ? 0 : -size / 3,
+              zIndex: visibleAvatars.length - index,
+              objectFit: "cover",
+            }}
+            title={avatar.name}
+          />
+        </Link>
       ))}
       {extraCount > 0 && (
         <div
