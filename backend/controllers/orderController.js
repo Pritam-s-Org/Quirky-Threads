@@ -110,7 +110,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			discount,
 			preOrderFee: preOrderFee,
 			totalPrice,
-			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 1000)}`,
+			orderId: `ORD-${Date.now()}-${Math.floor(Math.random() * 900) + 100}`,
 		});
 
 		try {
@@ -330,15 +330,15 @@ const getOrders = asyncHandler(async (req, res) => {
 });
 
 //@desc   Get pre-ordered items for manufacturer
-//@route  GET /api/orders
+//@route  GET /api/orders/preorder
 //@access Private/Admin or Manufacturer
 const preOrderedItems =asyncHandler(async (req, res) => {
-	const orders = await Order.find({"preOrderFee": {"$exists": true}}).select("-shippingAddress -totalPrice -user");
+	const orders = await Order.find({"preOrderFee": {"$exists": true}}).select("-shippingAddress -totalPrice -user").sort({"updatedAt" : -1});
 	res.status(200).json(orders);
 });
 
 //@desc   Get pre-ordered items for manufacturer
-//@route  GET /api/orders
+//@route  PUT /api/orders/preorder
 //@access Private/Admin or Manufacturer
 const updateOrderToManufactured = asyncHandler(async (req, res) => {
 const order = await Order.findById(req.body.orderId);
