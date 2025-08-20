@@ -4,7 +4,6 @@ import Order from "../models/oderModel.js";
 import Product, { ProductView } from "../models/productModel.js";
 import razorpay from "../config/razorpay.js";
 import mongoose from "mongoose";
-import User from "../models/userModel.js";
 
 const verifyOrderStock = async (req, res) => {
 	const orderItems = req.body.cartItems; // Expected: [{ keyId, qty }]
@@ -260,15 +259,9 @@ const getOrderById = asyncHandler(async (req, res) => {
 		"user",
 		"name email"
 	);
-	const user = await User.findById(req.user._id)
 
 	if (order) {
-		if (String(req.user._id) === String(order.user._id) || user.role === "admin") {
-			res.status(200).json(order);
-		} else {
-			res.status(401);
-			throw new Error("You are not authorized to view others orders.")
-		}
+		res.status(200).json(order);
 	} else {
 		res.status(404);
 		throw new Error("Order not found");
