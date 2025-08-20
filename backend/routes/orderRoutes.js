@@ -8,7 +8,7 @@ router.route("/cartVerification").post(protect, verifyOrderStock);
 router.route("/verifyPayment").post(protect, verifyPayment);
 router.route("/myorders").get(protect, getMyOrders);
 router.route("/preorder").get(protect, manufacturer, preOrderedItems).put(protect, manufacturer, updateOrderToManufactured)
-//router.route("/preorder/:id") // .get(protect, manufacturer, preOrderedOneItem) preOrderedItems controller need to be created BEFORE UNCOMMENTING
+router.route("/preorder/:id") // .get(protect, manufacturer, preOrderedOneItem) preOrderedItems controller need to be created BEFORE UNCOMMENTING
 router.route("/:id").get(protect, getOrderById)
 router.route("/:id/pay").put(protect, updateOrderToPaid)
 router.route("/:id/deliver").put(protect, admin, updateOrderToDelivered)

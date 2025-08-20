@@ -109,10 +109,6 @@ const OrderScreen = () => {
                         <Col>Transaction Fee</Col>
                         <Col className="text-end">+ ₹{order.secureTransactionFee.toFixed(2)}</Col>
                       </Row>}
-                      {order.preOrderFee > 0 && <Row>
-                        <Col>Pre Ordering Fee</Col>
-                        <Col className="text-end">+ ₹{order.preOrderFee.toFixed(2)}</Col>
-                      </Row>}
                       <Row>
                         <Col>Discount</Col>
                         <Col className="text-end">- ₹{order.discount.toFixed(2)}</Col>

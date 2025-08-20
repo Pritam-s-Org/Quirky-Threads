@@ -34,7 +34,7 @@ const OrderListScreen = () => {
               {orders.map((order, index) => (
                 <tr key={order._id}>
                   <td>{++index}.</td>
-                  <td>{order.orderId}</td>
+                  <td>{order._id}</td>
                   <td>{order.user && order.user.name}</td>
                   <td>{dateFormatting(order.createdAt).substring(0,10)}</td>
                   <td>{order.totalPrice.toFixed(2)}</td>
