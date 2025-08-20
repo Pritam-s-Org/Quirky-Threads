@@ -36,8 +36,11 @@ const OrderScreen = () => {
 
   return (
     isLoading ? (<Loader />) :
-      error ? (<Message variant="danger" />) :
-        (
+      error ? (<>
+          <Meta title={`Quirky Threads | Unauthotized`} />
+          <Message variant="danger">{error?.data?.message || error.error}</Message>
+          </>
+        ) : (
           <>
             <Meta title={`Quirky Threads | Order-${order._id}`} />
             <h1>Order Id: {order.orderId}</h1>
