@@ -1,4 +1,4 @@
-import { Row, Col } from "react-bootstrap"
+import { Row, Col, Modal, Button } from "react-bootstrap"
 import { Link, useParams } from "react-router-dom";
 import Product from "../components/Product";
 import Message from "../components/Message.jsx";
@@ -6,10 +6,26 @@ import Paginate from "../components/Paginate.jsx";
 import ProductCarousel from "../components/ProductCarousel.jsx";
 import Meta from "../components/Meta.jsx"
 import { useGetProductsQuery } from "../slicers/productApiSlice.js";
+import usePWAInstall from "../components/usePWAInstall.jsx";
+import { useEffect, useState } from "react";
 
 const HomeScreen = () => {
   const { pageNumber, keyword } = useParams()
   const { data, isLoading, error } = useGetProductsQuery({ keyword, pageNumber })
+  const { isInstalled, canInstall, promptInstall } = usePWAInstall();
+  const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (!isInstalled && canInstall) {
+      setShowModal(true); // show popup on homepage load
+    }
+  }, [isInstalled, canInstall]);
+
+  const handleInstall = async () => {
+    const result = await promptInstall();
+    console.log("Install result:", result?.outcome);
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -46,6 +62,24 @@ const HomeScreen = () => {
           <hr />
         </Row> */}
       </>}
+      <Modal show={showModal} onHide={() => setShowModal(false)} top>
+        <Modal.Body>
+          <h4>Install our app and enjoy:</h4>
+          <ul className="mb-0">
+            <li>Faster loading and smoother experience</li>
+            <li>Works even when you’re offline</li>
+            <li>Ultra-lightweight — takes only ~1 MB of space</li>
+          </ul>
+        </Modal.Body>
+        <Modal.Footer className="justify-content-center border-0">
+          <Button variant="outline-secondary" onClick={() => setShowModal(false)}>
+            Maybe Later
+          </Button>
+          <Button variant="warning" onClick={handleInstall}>
+            <b>Install Now</b>
+          </Button>
+        </Modal.Footer>
+      </Modal>
     </>
   )
 }
