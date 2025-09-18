@@ -29,8 +29,6 @@ const PlaceOrdersScreen = () => {
 			navigate("/shipping");
 		} else if (!cart.paymentMethod) {
 			navigate("/payment");
-		// } else if (!userInfo.buyingItem && !cart.cartItems.length){
-		// 	navigate("/")
 		}
 	}, [cart, userInfo, navigate]);
 
@@ -43,7 +41,7 @@ const PlaceOrdersScreen = () => {
 
 	const placeOrderHandler = async (e) => {
 		try {
-			if (userInfo?.buyingItem && userInfo.buyingItem?.actionItem !== "preOrder"){
+			if (userInfo?.buyingItem?.actionItem !== "preOrder"){
 				const response = await productStatus(orderItems).unwrap();
 				if (!response.success) return toast.error("One of your order items having stock issue, please revisit your cart again.");
 			}

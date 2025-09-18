@@ -46,9 +46,9 @@ const CartScreen = () => {
 	};
 
 	const handleCheckoutClick = async () => {
+		userInfo?.buyingItem && dispatch(removeBuyingItem());
     try {
-			userInfo.buyingItem && dispatch(removeBuyingItem());
-      setStockStatus(null)
+      setStockStatus(null);
       const res = await productStatus(orderItems).unwrap();
       setStockStatus(res);
       res.success ? navigate("/login?redirect=/shipping") : toast.warning("Please recheck your cart items.")
