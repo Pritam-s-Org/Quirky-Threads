@@ -40,7 +40,7 @@ const ProductScreen = () => {
   }, [selectedVariant, size])
 
   const addToCartHandler = () => {
-    userInfo.buyingItem && dispatch(removeBuyingItem());
+    userInfo?.buyingItem && dispatch(removeBuyingItem());
     dispatch(addToCart({ 
       ...product, 
       variants: {...selectedVariant, sizes : selectedVariant?.sizes?.find(item => item.size === size)},
