@@ -272,7 +272,7 @@ const deleteUser = asyncHandler (async (req, res)=>{
 
   if (user && user.role === "admin") {
     res.status(400).json({message: "Cannot delete Admin User, you can delete it form the database only."})
-  }else if(user && !user.role === "admin"){
+  }else if(user && user.role !== "admin"){
     await User.deleteOne({_id: user._id})
     res.status(200).json({message: "User deleted from the database!"})
   } else {
