@@ -70,7 +70,7 @@ const PlaceOrdersScreen = () => {
 					amount: res.data.totalPrice, // Amount is in currency subunits. Default currency is INR. Hence, 50000 refers to 50000 paise
 					currency: "INR",
 					name: "Quirky Threads",
-					description: `Transaction for Order ID: ${res?.data?._id}`,
+					description: `Transaction for Order ID: ${res?.data?.orderId}`,
 					image: brandLogo,
 					order_id: res?.razorpayOrderId,
 					handler: async function (response) {

@@ -1,8 +1,8 @@
 const allowedOrigins = [
-  'http://localhost:3000',
-  'https://quirky-threads.onrender.com',
-  'https://quirky-threads.vercel.app',
-  'https://quirky-threads.domain.com'
+  "http://localhost:3000",
+  "https://quirky-threads.onrender.com",
+  "https://quirky-threads.vercel.app",
+  "https://quirky-threads.domain.com"
 ];
 
 const corsOptions = {
@@ -10,13 +10,13 @@ const corsOptions = {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(new Error('CORS policy: Not allowed'));
+      callback(new Error("CORS policy: Not allowed"));
     }
   },
   credentials: true, // enable cookies/headers if needed
   optionsSuccessStatus: 200,
-  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-  allowedHeaders: ['Content-Type', 'Authorization'],
+  methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 };
 
 export default corsOptions;
