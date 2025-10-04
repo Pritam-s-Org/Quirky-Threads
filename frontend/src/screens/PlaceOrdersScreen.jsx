@@ -34,7 +34,7 @@ const PlaceOrdersScreen = () => {
 
 	const productsToBuy = userInfo.buyingItem ? Array(userInfo.buyingItem) : cart.cartItems
 
-	const orderItems = (Array(userInfo?.buyingItem) || cart.cartItems)?.map((item) => ({
+	const orderItems = productsToBuy?.map((item) => ({
 		keyId: item?.keyId,
 		qty: item?.qty,
 	}));
@@ -46,7 +46,7 @@ const PlaceOrdersScreen = () => {
 				if (!response.success) return toast.error("One of your order items having stock issue, please revisit your cart again.");
 			}
 			const orderObject = {
-				orderItems: userInfo.buyingItem ? Array(userInfo.buyingItem) : cart.cartItems,
+				orderItems: productsToBuy,
 				shippingAddress: cart.shippingAddress,
 				paymentMethod: cart.paymentMethod,
 				itemsPrice: userInfo.buyingItem?.price || cart.itemsPrice,
@@ -107,7 +107,7 @@ const PlaceOrdersScreen = () => {
 						merchant_order_id: res?.data?._id,
 					},
 					theme: {
-						color: "#7b8a8b",
+						color: "#fbd15eff",
 					},
 				};
 				const rzp1 = new window.Razorpay(options);
