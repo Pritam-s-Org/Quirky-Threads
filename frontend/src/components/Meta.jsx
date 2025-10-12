@@ -14,7 +14,7 @@ const Meta = ({title, description, keywords}) => {
 Meta.defaultProps = {
   title: "Quirky Threads",
   description: "Quirky Threads: The one stop e-commerce fashion shop that is available all over the India.",
-  keywords: "fashion, buy t-shirts, branded product in best price"
+  keywords: "fashion, buy t-shirts, quality product in best price"
 }
 
 export default Meta

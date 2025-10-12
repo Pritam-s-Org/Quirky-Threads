@@ -1,14 +1,13 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Spinner, Table, Row, Col } from "react-bootstrap";
+import { Form, Button, Spinner, Table, Row, Col, Image } from "react-bootstrap";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
-import FormContainer from "../../components/FormContainer";
 import Meta from "../../components/Meta";
 import { toast } from "react-toastify";
 import { useUpdateAnyProductMutation, useGetProductDetailsQuery, useUploadProductImageMutation } from "../../slicers/productApiSlice";
-import { FaCheck, FaCopy, FaEdit, FaPencilAlt, FaTrash } from "react-icons/fa";
+import { FaCheck, FaCopy, FaEdit, FaPencilAlt, FaPencilRuler, FaTrash } from "react-icons/fa";
 import VariantModal from "../../components/VariantModal";
 
 const ProductEditScreen = () => {
@@ -22,7 +21,9 @@ const ProductEditScreen = () => {
 	const [showPopup, setShowPopup] = useState(false);
 	const [isEditable, setEditable] = useState(false)
 	const [isCopied, setIsCopied] = useState([false]);
+	const [isEditing, setIsEditing] = useState([false]);
 	const [selectedVariant, setSelectedVariant] = useState(null);
+	// const [selectedIndex, setSelectedIndex] = useState({variantIndex : null, imageIndex : null});
 
 	const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId);
 	const [updateAnyProduct, { isLoading: loadingUpdate }] = useUpdateAnyProductMutation();
@@ -52,13 +53,23 @@ const ProductEditScreen = () => {
 		}
 	}, [product, productId]);
 
+	const handleVariantValueUpdate = (index, keyName, value) => {
+		const updated = [...variants];
+		// if (newName?.trim() === "" || newName?.length <= 2) {
+		// 	toast.error("Variant name must be between 2 and 20 characters long");
+		// 	return;
+		// }
+		updated[index] = { ...updated[index], [keyName]: value };
+		setVariants(updated);
+	};
+
 	const uploadFileHandler = async (e, index) => {
 		const formData = new FormData();
 		formData.append("image", e.target.files[0]);
 		try {
 			const res = await uploadProductImage(formData).unwrap();
 			toast.success(`Server: ${res.message}`);
-      handleVariantValueUpdate(index, "image", res.secure_url || res.publicUrl)
+      handleVariantValueUpdate(index, "image", [...variants[index].image, res.secure_url || res.publicUrl])
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		} finally {
@@ -70,7 +81,7 @@ const ProductEditScreen = () => {
 		const newVariant = {
 			variantName: "",
 			sizes: [],
-			image: "/images/sample.jpg",
+			image: ["/images/sample.jpg"],
 		};
 		setVariants((prev) => [...prev, newVariant]);
 		setIsCopied((prev) => [...prev, false]);
@@ -80,16 +91,6 @@ const ProductEditScreen = () => {
 		setVariants((prev) =>
 			prev.map((v) => (v._id === updatedVariant._id ? updatedVariant : v))
 		);
-	};
-
-	const handleVariantValueUpdate = (index, keyName, value) => {
-		const updated = [...variants];
-		// if (newName?.trim() === "" || newName?.length <= 2) {
-		// 	toast.error("Variant name must be between 2 and 20 characters long");
-		// 	return;
-		// }
-		updated[index] = { ...updated[index], [keyName]: value };
-		setVariants(updated);
 	};
 
 	const handleDeleteVariant = (identifier) => {
@@ -121,13 +122,30 @@ const ProductEditScreen = () => {
 		}, 6000);
 	};
 
+	// const editHandler = (index) => {
+	// 	const imagesArr = variants[index].image;
+
+	// 	setIsEditing((prev) => {
+	// 		const updated = [...prev];
+	// 		updated[index] = !updated[index];
+	// 		return updated;
+	// 	});
+
+	// 	(isEditing[index] && imagesArr[imagesArr.length - 1] !== "/images/sample.jpg") ? 
+	// 		imagesArr.push("/images/sample.jpg") : 
+	// 		imagesArr[imagesArr.length - 1] === "/images/sample.jpg" && imagesArr.pop()
+	// };
+
+	// console.log(isEditing);
+	
+	
 	return (
 		<>
 			<Meta title={`Admin | ${name} | Quirky Threads`} />
 			<Link to="/admin/productlist" className="btn btn-light my-3">
 				Go back
 			</Link>
-			<FormContainer>
+			<Row>
 				<h1>Edit Product</h1>
 				{loadingUpdate && <Loader />}
 				{isLoading ? (
@@ -186,13 +204,14 @@ const ProductEditScreen = () => {
 						<Table hover responsive className="table-sm">
 							<thead>
 								<tr>
-									<th>
+									<th style={{ width: "20%" }}>
 										<Form.Label className="mb-0">Variant Color</Form.Label>
 									</th>
 									<th>
-										<Form.Label className="mb-0">Variant Image <FaPencilAlt onClick={() => setEditable(!isEditable)} /></Form.Label>
+										<Form.Label className="mb-0">Variant Image {isEditable? <FaPencilRuler onClick={() => setEditable(false)} /> : <FaPencilAlt onClick={() => setEditable(true)} />}</Form.Label>
 									</th>
-									<th style={{ width: "20%" }}>Actions</th>
+									<th style={{ width: "15%" }}>Manage Stocks</th>
+									<th style={{ width: "5%" }}>Delete</th>
 								</tr>
 							</thead>
 							<tbody>
@@ -209,13 +228,13 @@ const ProductEditScreen = () => {
 										</td>
 										<td>
 											<Form.Group controlId="image">
-												<div style={{ position: "relative" }}>
+												{/* <div className="position-relative">
 													<Form.Control
 														type="text"
-														placeholder="Image url"
-														value={variant.image}
-														readOnly={!isEditable}
-														onChange={(e)=> isEditable && handleVariantValueUpdate( index, "image", e.target.value)}
+														placeholder="Enter Public Image URL or Upload A New One"
+														value={isEditing[index] ? variant.image[variant.image.length - 1] : ""}
+														onChange={(e)=> isEditing[index] && handleVariantValueUpdate( index, "image", variant["image"][variant["image"].length - 1] = e.target.value)}
+														readOnly={!isEditing[index]}
 													/>
 													<span 
 														style={{
@@ -231,7 +250,8 @@ const ProductEditScreen = () => {
 													>
 														{isCopied[index] ? <FaCheck color="green" /> : <FaCopy onClick={() => copyHandler(index)} />}
 													</span>
-												</div>
+													{isEditing[index] ? <FaPencilRuler onClick={() => editHandler(index)} /> : <FaPencilAlt onClick={() => editHandler(index)} />}
+												</div> */}
 												<Form.Control
 													className="rounded-bottom"
 													type="file"
@@ -240,6 +260,35 @@ const ProductEditScreen = () => {
 													onChange={(e) => uploadFileHandler(e, index)}
 													disabled={loadingUpload}
 												/>
+												<Row>
+													{variant["image"].map((img, i)=>
+													<Col className="d-flex" key={i}>
+														<Image
+															key={img}
+															src={img}
+															alt={variant.name}
+															title={variant.name}
+															rounded
+															style={{
+																border: "3px solid #a07d00ff",
+																margin: "0 1%",
+																width: "100px"
+															}}
+														/><p 
+															// onClick={()=>handleDeleteImage(variant, img)}
+															style={{
+																cursor: "pointer",
+																height: "fit-content",
+																width: "1.6rem",
+																background: "white",
+																border: "1px solid black",
+																borderRadius: "50%",
+																marginLeft : "-17px",
+															}}><b>x</b>
+														</p>
+													</Col>
+													)}
+												</Row>
 											</Form.Group>
 										</td>
 										<td>
@@ -251,10 +300,9 @@ const ProductEditScreen = () => {
 													}}
 												/>
 											</Button>
-											<Button
-												variant="outline-danger"
-												className="btn-sm mx-1 my-4"
-											>
+										</td>
+										<td>
+											<Button variant="outline-danger" className="btn-sm mx-1 my-4">
 												<FaTrash
 													color="black"
 													onClick={() =>
@@ -283,6 +331,7 @@ const ProductEditScreen = () => {
 									variant="outline-success"
 									onClick={handleAddVariant}
 									className="my-2"
+									disabled={!product.variants[product.variants.length -1].variantName}
 								>
 									Add Variant
 								</Button>
@@ -295,7 +344,7 @@ const ProductEditScreen = () => {
 						</Col>
 					</Form>
 				)}
-			</FormContainer>
+			</Row>
 		</>
 	);
 };

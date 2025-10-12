@@ -23,7 +23,7 @@ const sizeSchema = new mongoose.Schema({
 
 const variantSchema = new mongoose.Schema({
 	variantName: { type: String, required: true, trim: true, default: "", unique: true },
-	image: { type: String, required: true, default: "/images/sample.jpg" },
+	image: { type: [String], required: true, default: ["/images/sample.jpg"] },
 	sizes: [sizeSchema],
 });
 

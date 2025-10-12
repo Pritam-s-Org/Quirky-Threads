@@ -23,7 +23,7 @@ const Footer = () => {
           {/* Contacts */}
           <Col md={3} sm={6}>
             <h4 className="fw-semibold mb-3 text-center">Contact Us</h4>
-            <div className="d-flex gap-3">
+            <div className="d-flex gap-3 justify-content-center">
               <a 
                 href="https://m.me/quirkythreadsIN?text=Hello%20👋%20I'm%20reaching%20out%20from%20the%20Quirky%20Threads%20website.%20I’d%20love%20to%20know%20more%20about%20your%20latest%20collections!" 
                 className="text-light fs-5"><FaFacebookMessenger className="bi bi-facebook" />

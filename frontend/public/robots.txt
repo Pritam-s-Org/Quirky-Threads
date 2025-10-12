@@ -1,0 +1,7 @@
+User-agent: *
+Allow: /
+Disallow: /auth/
+Disallow: /config/
+Disallow: /docs/
+Disallow: /razorpay/
+Disallow: /error/

@@ -3,14 +3,20 @@ import fs from "fs";
 import express from "express";
 import multer from "multer";
 import { v2 as cloudinary } from "cloudinary";
+import sharp from "sharp";
 const router = express.Router();
 
 // Cloudinary configuration
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-  secure: true
+// cloudinary.config({
+//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+//   api_key: process.env.CLOUDINARY_API_KEY,
+//   api_secret: process.env.CLOUDINARY_API_SECRET,
+//   secure: true
+// });
+const uploadDir = process.env.UPLOAD_DIRECTORY;
+
+[uploadDir, "uploads/", `${uploadDir}/gifs`].forEach((dir) => {
+  if (!fs.existsSync(dir)) fs.mkdirSync(dir, { recursive: true });
 });
 
 const storage = multer.diskStorage({
@@ -23,8 +29,8 @@ const storage = multer.diskStorage({
 })
 
 function fileFilter(req, file, cb) {
-  const filetypes = /jpe?g|png|webp/;
-  const mimetypes = /image\/jpe?g|image\/png|image\/webp/;
+  const filetypes = /jpe?g|png|webp|gif/;
+  const mimetypes = /image\/jpe?g|image\/png|image\/webp|image\/gif/;
 
   const extname = filetypes.test(path.extname(file.originalname).toLowerCase())
   const mimetype = mimetypes.test(file.mimetype)
@@ -43,17 +49,38 @@ const upload = multer({
 router.post("/", upload.single("image"), async (req, res)=>{
   try {
     const filePath = req.file.path;
-    const result = await cloudinary.uploader.upload(filePath, {
-      folder: "Quirky-Products", // specify folder in Cloudinary
-      resource_type: "image", // specify resource type
-      transformation: [
-        { width: 1000, crop: "scale" },
-        { quality: "auto" },
-        { fetch_format: "auto" }
-      ]
-    });
+    const fileExt = path.extname(req.file.originalname).toLowerCase();
 
-    fs.unlinkSync(filePath); // Delete the local file after upload
+    if (fileExt === ".gif") {
+      const destPath = path.join(`${uploadDir}/gifs`, req.file.filename);
+      await fs.promises.rename(filePath, destPath);
+      return res.json({
+      message: "Gif Uploaded",
+      image: `/${filePath}`,
+      imageUrl: destPath
+    });
+    }
+
+    const optimizedPath = path.join(
+      uploadDir,
+      path.parse(req.file.filename).name + ".webp"
+    );
+    // const result = await cloudinary.uploader.upload(filePath, {
+    //   folder: "Quirky-Products", // specify folder in Cloudinary
+    //   resource_type: "image", // specify resource type
+    //   transformation: [
+    //     { width: 1000, crop: "scale" },
+    //     { quality: "auto" },
+    //     { fetch_format: "auto" }
+    //   ]
+    // });
+
+    await sharp(filePath)
+      .resize({ width: 1000 })
+      .toFormat("webp", { quality: 80 })
+      .toFile(optimizedPath);
+
+    await fs.promises.unlinkSync(filePath); // Delete the local file after upload
   
     res.status(200).json({
       message: "Image Uploaded",
