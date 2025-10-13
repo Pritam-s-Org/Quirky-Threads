@@ -18,6 +18,7 @@ import { useVerifyOrderStockMutation } from "../slicers/orderApiSlices.js";
 import { toast } from "react-toastify";
 import Loader from "../components/Loader.jsx";
 import { removeBuyingItem } from "../slicers/authSlice.js";
+import { BASE_URL } from "../constants.js";
 
 const CartScreen = () => {
 	const [stockStatus, setStockStatus] = useState(null);
@@ -97,7 +98,7 @@ const CartScreen = () => {
 								<Row>
 									<Col md={2}>
 										<Image
-											src={item.variants.image}
+											src={`${BASE_URL}/${item.variants.images[0]}`}
 											alt={`${item.name}-${item.variants.variantName}`}
 											fluid
 											rounded

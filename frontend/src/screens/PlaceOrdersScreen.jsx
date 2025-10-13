@@ -12,6 +12,7 @@ import { clearCartItems } from "../slicers/cartSlice";
 import brandLogo from "../assetes/Brand.png"
 import { FaEdit } from "react-icons/fa";
 import { removeBuyingItem } from "../slicers/authSlice.js";
+import { BASE_URL } from "../constants.js";
 
 const PlaceOrdersScreen = () => {
 	const navigate = useNavigate();
@@ -168,7 +169,7 @@ const PlaceOrdersScreen = () => {
 											<Row>
 												<Col md={1}>
 													<Image
-														src={item?.variants?.image}
+														src={`${BASE_URL}/${item?.variants?.images[0]}`}
 														alt={`${item?.name}-${item?.variants.variantName}`}
 														fluid
 														rounded

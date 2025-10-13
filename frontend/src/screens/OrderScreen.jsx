@@ -7,7 +7,7 @@ import Meta from "../components/Meta.jsx"
 import { toast } from "react-toastify"
 import { useSelector } from "react-redux"
 import { useGetOrderDetailsQuery, usePayOrderMutation, useDeliverOrderMutation } from "../slicers/orderApiSlices"
-import { dateFormatting } from "../constants.js"
+import { BASE_URL, dateFormatting } from "../constants.js"
 
 const OrderScreen = () => {
   const { id: orderId } = useParams()
@@ -78,7 +78,7 @@ const OrderScreen = () => {
                     {order.orderItems.map((item, index) => (
                       <ListGroup.Item key={index}>
                         <Row>
-                          <Col md={1}><Image src={item.image} alt={`${item.name}-${item.variantColor}`} fluid rounded /></Col>
+                          <Col md={1}><Image src={`${BASE_URL}/${item.images[0]}`} alt={`${item.name}-${item.variantColor}`} fluid rounded /></Col>
                           <Col md={5}>
                             <Link to={`/product/${item.product}`}>{item.name} ({item.variantColor})</Link>
                             <h6>Size : {item.size}</h6>

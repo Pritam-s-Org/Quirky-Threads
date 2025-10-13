@@ -4,6 +4,7 @@ import express from "express";
 import multer from "multer";
 import sharp from "sharp";
 const router = express.Router();
+import { protect, admin } from "../middleware/authMiddleware.js"
 
 const uploadDir = process.env.UPLOAD_DIRECTORY;
 
@@ -38,7 +39,7 @@ const upload = multer({
   fileFilter,
 })
 
-router.post("/", upload.single("image"), async (req, res) => {
+router.post("/", protect, admin, upload.single("image"), async (req, res) => {
   try {
     const baseUrl = `${req.protocol}://${req.get("host")}`
 
@@ -50,7 +51,7 @@ router.post("/", upload.single("image"), async (req, res) => {
       await fs.promises.rename(filePath, destPath);
       return res.json({
         message: "Gif Uploaded",
-        imagePath: `/${filePath}`,
+        imagePath: `/${destPath}`,
         imageUrl: `${baseUrl}/uploads/gifs/${req.file.filename}`
       });
     }
@@ -75,7 +76,7 @@ router.post("/", upload.single("image"), async (req, res) => {
   }
 })
 
-router.delete("/delete/:fileName", async (req, res) => {
+router.delete("/delete/:fileName", protect, admin, async (req, res) => {
   try {
     const { fileName } = req.params;
     const fileExt = path.extname(fileName).toLowerCase();

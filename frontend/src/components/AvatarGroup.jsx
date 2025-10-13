@@ -1,6 +1,7 @@
 import React from "react";
 import { Link } from "react-router-dom";
 import { Image } from "react-bootstrap";
+import { BASE_URL } from "../constants";
 
 const AvatarGroup = ({ avatars = [], maxVisible = 2, size = 50 }) => {
   const visibleAvatars = avatars.slice(0, maxVisible);
@@ -11,7 +12,7 @@ const AvatarGroup = ({ avatars = [], maxVisible = 2, size = 50 }) => {
       {visibleAvatars.map((avatar, index) => (
         <Link to={`/product/${avatar.product}`} key={index}>
           <Image
-            src={avatar.image}
+            src={`${BASE_URL}/${avatar.images[0]}`}
             alt={avatar.name}
             roundedCircle
             width={size}

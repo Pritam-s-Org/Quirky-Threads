@@ -4,7 +4,7 @@ import { Form, Col, Row, Image, ListGroup, Card, Button } from "react-bootstrap"
 import { FaArrowCircleLeft, FaCartPlus } from "react-icons/fa"
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
-import { getContrastTextColor } from "../constants.js";
+import { BASE_URL, getContrastTextColor } from "../constants.js";
 import { addToCart } from "../slicers/cartSlice.js";
 import { useGetProductDetailsQuery, useCreateReviewMutation } from "../slicers/productApiSlice.js";
 import Rating from "../components/Rating";
@@ -93,7 +93,7 @@ const ProductScreen = () => {
         />
           <Row>
             <Col md={5}>
-              <Image src={selectedVariant?.image} alt={`${product.name}-${selectedVariant?.variantName}`} fluid />
+              <Image src={`${BASE_URL}/${selectedVariant?.images[0]}`} alt={`${product.name}-${selectedVariant?.variantName}`} fluid />
             </Col>
             <Col md={4}>
               <ListGroup variant="flush">

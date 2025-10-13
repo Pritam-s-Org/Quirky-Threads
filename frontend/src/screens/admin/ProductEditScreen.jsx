@@ -6,9 +6,10 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Meta from "../../components/Meta";
 import { toast } from "react-toastify";
-import { useUpdateAnyProductMutation, useGetProductDetailsQuery, useUploadProductImageMutation } from "../../slicers/productApiSlice";
-import { FaCheck, FaCopy, FaEdit, FaPencilAlt, FaPencilRuler, FaTrash } from "react-icons/fa";
+import { useUpdateAnyProductMutation, useGetProductDetailsQuery, useUploadProductImageMutation, useDeleteProductImageMutation } from "../../slicers/productApiSlice";
+import { FaEdit, FaTrash } from "react-icons/fa";
 import VariantModal from "../../components/VariantModal";
+import { BASE_URL } from "../../constants";
 
 const ProductEditScreen = () => {
 	const { id: productId } = useParams();
@@ -19,19 +20,18 @@ const ProductEditScreen = () => {
 	const [description, setDescription] = useState("");
 	const [variants, setVariants] = useState([]);
 	const [showPopup, setShowPopup] = useState(false);
-	const [isEditable, setEditable] = useState(false)
-	const [isCopied, setIsCopied] = useState([false]);
-	const [isEditing, setIsEditing] = useState([false]);
 	const [selectedVariant, setSelectedVariant] = useState(null);
-	// const [selectedIndex, setSelectedIndex] = useState({variantIndex : null, imageIndex : null});
 
 	const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId);
 	const [updateAnyProduct, { isLoading: loadingUpdate }] = useUpdateAnyProductMutation();
 	const [uploadProductImage, { isLoading: loadingUpload }] = useUploadProductImageMutation();
+	const [deleteProductImage, { isLoading: loadingDelete}] = useDeleteProductImageMutation();
 	const navigate = useNavigate();
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
+		if (!variants.images.length) return toast.error("There should be atleast one image to update a product.");
+
 		try {
 			await updateAnyProduct({ productId, name:name.trim(), price, tags, description:description.trim(), variants }).unwrap();
 			toast.success("Product updated");
@@ -49,16 +49,11 @@ const ProductEditScreen = () => {
 			setTags(product.tags.toString());
 			setDescription(product.description);
 			setVariants(product.variants);
-			setIsCopied(new Array(product.variants.length).fill(false));
 		}
 	}, [product, productId]);
 
 	const handleVariantValueUpdate = (index, keyName, value) => {
 		const updated = [...variants];
-		// if (newName?.trim() === "" || newName?.length <= 2) {
-		// 	toast.error("Variant name must be between 2 and 20 characters long");
-		// 	return;
-		// }
 		updated[index] = { ...updated[index], [keyName]: value };
 		setVariants(updated);
 	};
@@ -69,11 +64,9 @@ const ProductEditScreen = () => {
 		try {
 			const res = await uploadProductImage(formData).unwrap();
 			toast.success(`Server: ${res.message}`);
-      handleVariantValueUpdate(index, "image", [...variants[index].image, res.secure_url || res.publicUrl])
+      handleVariantValueUpdate(index, "image", [...variants[index].images, res.imagePath || res.secure_url])
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
-		} finally {
-			refetch();
 		}
 	};
 
@@ -84,7 +77,6 @@ const ProductEditScreen = () => {
 			image: ["/images/sample.jpg"],
 		};
 		setVariants((prev) => [...prev, newVariant]);
-		setIsCopied((prev) => [...prev, false]);
 	};
 
 	const handleUpdateVariant = (updatedVariant) => {
@@ -105,39 +97,16 @@ const ProductEditScreen = () => {
 		);
 	};
 
-  const copyHandler = (index) => {
+	const handleDeleteImage = async (index, img) => {
+		const newVariantImageList = variants[index]?.images?.filter(item => !item.includes(img));
 		try {
-			navigator.clipboard.writeText(variants[index].image);
-			toast.success("URL Copied to Clipboard Successfully");
-			setIsCopied((prev) => {
-				const updated = [...prev];
-				updated[index] = true;
-				return updated;
-			});
+			const res = await deleteProductImage(img.split("/").pop());
+			toast.success(res.message);
+			handleVariantValueUpdate(index, "image", newVariantImageList);
 		} catch (err) {
-			toast.error("Failed to copy the text");
+			toast.error(err.error || err.data.message);
 		}
-		setTimeout(() => {
-			setIsCopied(false);
-		}, 6000);
-	};
-
-	// const editHandler = (index) => {
-	// 	const imagesArr = variants[index].image;
-
-	// 	setIsEditing((prev) => {
-	// 		const updated = [...prev];
-	// 		updated[index] = !updated[index];
-	// 		return updated;
-	// 	});
-
-	// 	(isEditing[index] && imagesArr[imagesArr.length - 1] !== "/images/sample.jpg") ? 
-	// 		imagesArr.push("/images/sample.jpg") : 
-	// 		imagesArr[imagesArr.length - 1] === "/images/sample.jpg" && imagesArr.pop()
-	// };
-
-	// console.log(isEditing);
-	
+	}	
 	
 	return (
 		<>
@@ -200,7 +169,7 @@ const ProductEditScreen = () => {
 								}
 							/>
 						</Form.Group>
-						<h4 className="mb-3">Product Variants{loadingUpload && <Spinner animation="border" size="sm" />}</h4>
+						<h4 className="mb-3">Product Variants{(loadingUpload || loadingDelete) && <Spinner animation="border" size="sm" />}</h4>
 						<Table hover responsive className="table-sm">
 							<thead>
 								<tr>
@@ -208,14 +177,14 @@ const ProductEditScreen = () => {
 										<Form.Label className="mb-0">Variant Color</Form.Label>
 									</th>
 									<th>
-										<Form.Label className="mb-0">Variant Image {isEditable? <FaPencilRuler onClick={() => setEditable(false)} /> : <FaPencilAlt onClick={() => setEditable(true)} />}</Form.Label>
+										<Form.Label className="mb-0">Variant Image</Form.Label>
 									</th>
 									<th style={{ width: "15%" }}>Manage Stocks</th>
 									<th style={{ width: "5%" }}>Delete</th>
 								</tr>
 							</thead>
 							<tbody>
-								{variants.map((variant, index) => (
+								{variants?.map((variant, index) => (
 									<tr key={variant._id || `new-${index}`}>
 										<td>
 											<Form.Control
@@ -261,21 +230,21 @@ const ProductEditScreen = () => {
 													disabled={loadingUpload}
 												/>
 												<Row>
-													{variant["image"].map((img, i)=>
+													{variant.images?.map((img, i)=>
 													<Col className="d-flex" key={i}>
 														<Image
 															key={img}
-															src={img}
+															src={`${BASE_URL}/${img}`}
 															alt={variant.name}
 															title={variant.name}
 															rounded
 															style={{
-																border: "3px solid #a07d00ff",
+																border: "2px solid #a07d00ff",
 																margin: "0 1%",
 																width: "100px"
 															}}
 														/><p 
-															// onClick={()=>handleDeleteImage(variant, img)}
+															onClick={()=>handleDeleteImage(index, img)}
 															style={{
 																cursor: "pointer",
 																height: "fit-content",
@@ -284,7 +253,7 @@ const ProductEditScreen = () => {
 																border: "1px solid black",
 																borderRadius: "50%",
 																marginLeft : "-17px",
-															}}><b>x</b>
+															}}><b>✕</b>
 														</p>
 													</Col>
 													)}
