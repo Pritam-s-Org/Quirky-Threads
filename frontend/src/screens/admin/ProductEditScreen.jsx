@@ -40,7 +40,6 @@ const ProductEditScreen = () => {
 
 	const submitHandler = async (e) => {
 		e.preventDefault();
-		if (!variants?.images) return toast.error("There should be atleast one image to update a product.");
 
 		try {
 			await updateAnyProduct({ productId, name:name.trim(), price, tags, description:description.trim(), variants }).unwrap();
@@ -61,13 +60,11 @@ const ProductEditScreen = () => {
 	const uploadFileHandler = async (e, index) => {
 		const formData = new FormData();
 		formData.append("image", e.target.files[0]);
-		console.log([...variants[index]?.images]);
-		console.log([...(variants[index]?.images)]);
 		
 		try {
 			const res = await uploadProductImage(formData).unwrap();
 			toast.success(`Server: ${res.message}`);
-      handleVariantValueUpdate(index, "image", [...(variants[index]?.images), res.imageUrl])
+      handleVariantValueUpdate(index, "images", [...(variants[index]?.images), res.imageUrl])
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		}
@@ -104,6 +101,7 @@ const ProductEditScreen = () => {
 		const newVariantImageList = variants[index]?.images?.filter(item => !item.includes(img));
 		const imageName = img.split("/").pop();
 		try {
+			if (variants[index].images.length === 1) return toast.warning("You need to keep at least one image to update.")
 			if (window.confirm("Are you sure to delete the image?\n\nN.B.- The image will be downloaded into your local machine for future use, before deleting from the server.")) {
 				const a = document.createElement('a');
 				a.href = img;
