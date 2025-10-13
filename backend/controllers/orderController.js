@@ -96,7 +96,7 @@ const addOrderItems = asyncHandler(async (req, res) => {
 			orderItems: orderItems.map((i) => ({
 				...i,
 				product: i._id,
-				image: i.variants.image,
+				images: [i.variants.images],
 				variantColor: i.variants.variantName,
 				size: i.variants.sizes.size,
 				_id: undefined,
