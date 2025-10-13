@@ -28,9 +28,19 @@ const ProductEditScreen = () => {
 	const [deleteProductImage, { isLoading: loadingDelete}] = useDeleteProductImageMutation();
 	const navigate = useNavigate();
 
+	useEffect(() => {
+		if (product) {
+			setName(product.name);
+			setPrice(product.price);
+			setTags(product.tags.toString());
+			setDescription(product.description);
+			setVariants(product.variants);
+		}
+	}, [product, productId]);
+
 	const submitHandler = async (e) => {
 		e.preventDefault();
-		if (!variants.images.length) return toast.error("There should be atleast one image to update a product.");
+		if (!variants?.images) return toast.error("There should be atleast one image to update a product.");
 
 		try {
 			await updateAnyProduct({ productId, name:name.trim(), price, tags, description:description.trim(), variants }).unwrap();
@@ -42,16 +52,6 @@ const ProductEditScreen = () => {
 		}
 	};
 
-	useEffect(() => {
-		if (product) {
-			setName(product.name);
-			setPrice(product.price);
-			setTags(product.tags.toString());
-			setDescription(product.description);
-			setVariants(product.variants);
-		}
-	}, [product, productId]);
-
 	const handleVariantValueUpdate = (index, keyName, value) => {
 		const updated = [...variants];
 		updated[index] = { ...updated[index], [keyName]: value };
@@ -61,10 +61,13 @@ const ProductEditScreen = () => {
 	const uploadFileHandler = async (e, index) => {
 		const formData = new FormData();
 		formData.append("image", e.target.files[0]);
+		console.log([...variants[index]?.images]);
+		console.log([...(variants[index]?.images)]);
+		
 		try {
 			const res = await uploadProductImage(formData).unwrap();
 			toast.success(`Server: ${res.message}`);
-      handleVariantValueUpdate(index, "image", [...variants[index].images, res.imagePath || res.secure_url])
+      handleVariantValueUpdate(index, "image", [...(variants[index]?.images), res.imageUrl])
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		}
@@ -74,7 +77,7 @@ const ProductEditScreen = () => {
 		const newVariant = {
 			variantName: "",
 			sizes: [],
-			image: ["/images/sample.jpg"],
+			images: ["/images/sample.jpg"],
 		};
 		setVariants((prev) => [...prev, newVariant]);
 	};
