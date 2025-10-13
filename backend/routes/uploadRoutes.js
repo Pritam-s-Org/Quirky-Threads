@@ -41,8 +41,6 @@ const upload = multer({
 
 router.post("/", protect, admin, upload.single("image"), async (req, res) => {
   try {
-    const baseUrl = `${req.protocol}://${req.get("host")}`
-
     const filePath = req.file.path;
     const fileExt = path.extname(req.file.originalname).toLowerCase();
 
@@ -52,7 +50,7 @@ router.post("/", protect, admin, upload.single("image"), async (req, res) => {
       return res.json({
         message: "Gif Uploaded",
         imagePath: `/${destPath}`,
-        imageUrl: `${baseUrl}/uploads/gifs/${req.file.filename}`
+        imageUrl: `/uploads/gifs/${req.file.filename}`
       });
     }
 
@@ -68,8 +66,8 @@ router.post("/", protect, admin, upload.single("image"), async (req, res) => {
   
     res.status(200).json({
       message: "Image Uploaded",
-      imagePath: `/${filePath}`,
-      imageUrl: `${baseUrl}/uploads/${optimizedFileName}`
+      imagePath: `${optimizedPath}`,
+      imageUrl: `/uploads/${optimizedFileName}`
     })
   } catch (error) {
     res.status(500).json({ error: "Image upload failed", details: error });

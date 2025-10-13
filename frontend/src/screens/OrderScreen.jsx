@@ -78,7 +78,7 @@ const OrderScreen = () => {
                     {order.orderItems.map((item, index) => (
                       <ListGroup.Item key={index}>
                         <Row>
-                          <Col md={1}><Image src={`${BASE_URL}/${item.images[0]}`} alt={`${item.name}-${item.variantColor}`} fluid rounded /></Col>
+                          <Col md={1}><Image src={BASE_URL + item.images[0]} alt={`${item.name}-${item.variantColor}`} fluid rounded /></Col>
                           <Col md={5}>
                             <Link to={`/product/${item.product}`}>{item.name} ({item.variantColor})</Link>
                             <h6>Size : {item.size}</h6>

@@ -93,7 +93,7 @@ const ProductScreen = () => {
         />
           <Row>
             <Col md={5}>
-              <Image src={`${BASE_URL}/${selectedVariant?.images[0]}`} alt={`${product.name}-${selectedVariant?.variantName}`} fluid />
+              <Image src={BASE_URL + selectedVariant?.images[0]} alt={`${product.name}-${selectedVariant?.variantName}`} fluid />
             </Col>
             <Col md={4}>
               <ListGroup variant="flush">

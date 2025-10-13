@@ -243,7 +243,7 @@ const ProductEditScreen = () => {
 													<Col className="d-flex" key={i}>
 														<Image
 															key={img}
-															src={`${BASE_URL}/${img}`}
+															src={BASE_URL + img}
 															alt={variant.name}
 															title={variant.name}
 															rounded
@@ -253,7 +253,7 @@ const ProductEditScreen = () => {
 																width: "100px"
 															}}
 														/><p 
-															onClick={()=>handleDeleteImage(index, `${BASE_URL}/${img}`)}
+															onClick={()=>handleDeleteImage(index, BASE_URL + img)}
 															style={{
 																cursor: "pointer",
 																height: "fit-content",
