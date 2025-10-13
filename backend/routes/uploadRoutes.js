@@ -46,8 +46,10 @@ const upload = multer({
   fileFilter,
 })
 
-router.post("/", upload.single("image"), async (req, res)=>{
+router.post("/", upload.single("image"), async (req, res) => {
   try {
+    const baseUrl = `${req.protocol}://${req.get("host")}`
+
     const filePath = req.file.path;
     const fileExt = path.extname(req.file.originalname).toLowerCase();
 
@@ -55,37 +57,26 @@ router.post("/", upload.single("image"), async (req, res)=>{
       const destPath = path.join(`${uploadDir}/gifs`, req.file.filename);
       await fs.promises.rename(filePath, destPath);
       return res.json({
-      message: "Gif Uploaded",
-      image: `/${filePath}`,
-      imageUrl: destPath
-    });
+        message: "Gif Uploaded",
+        imagePath: `/${filePath}`,
+        imageUrl: `${baseUrl}/uploads/gifs/${req.file.filename}`
+      });
     }
 
-    const optimizedPath = path.join(
-      uploadDir,
-      path.parse(req.file.filename).name + ".webp"
-    );
-    // const result = await cloudinary.uploader.upload(filePath, {
-    //   folder: "Quirky-Products", // specify folder in Cloudinary
-    //   resource_type: "image", // specify resource type
-    //   transformation: [
-    //     { width: 1000, crop: "scale" },
-    //     { quality: "auto" },
-    //     { fetch_format: "auto" }
-    //   ]
-    // });
+    const optimizedFileName = path.parse(req.file.filename).name + ".webp";
+    const optimizedPath = path.join( uploadDir, optimizedFileName);
 
     await sharp(filePath)
       .resize({ width: 1000 })
       .toFormat("webp", { quality: 80 })
       .toFile(optimizedPath);
 
-    await fs.promises.unlinkSync(filePath); // Delete the local file after upload
+    await fs.promises.unlink(filePath); // Delete the local file after upload
   
     res.status(200).json({
       message: "Image Uploaded",
-      image: `/${filePath}`,
-      secure_url: result.secure_url
+      imagePath: `/${filePath}`,
+      imageUrl: `${baseUrl}/uploads/${optimizedFileName}`
     })
   } catch (error) {
     res.status(500).json({ error: "Image upload failed", details: error });
