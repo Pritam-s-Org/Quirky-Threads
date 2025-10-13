@@ -99,10 +99,19 @@ const ProductEditScreen = () => {
 
 	const handleDeleteImage = async (index, img) => {
 		const newVariantImageList = variants[index]?.images?.filter(item => !item.includes(img));
+		const imageName = img.split("/").pop();
 		try {
-			const res = await deleteProductImage(img.split("/").pop());
-			toast.success(res.message);
-			handleVariantValueUpdate(index, "image", newVariantImageList);
+			if (window.confirm("Are you sure to delete the image?\n\nN.B.- The image will be downloaded into your local machine for future use, before deleting from the server.")) {
+				const a = document.createElement('a');
+				a.href = img;
+				a.download = imageName;
+				document.body.appendChild(a);
+				a.click();
+				document.body.removeChild(a);
+				const res = await deleteProductImage(imageName);
+				toast.success(res.message);
+				handleVariantValueUpdate(index, "image", newVariantImageList);
+			}
 		} catch (err) {
 			toast.error(err.error || err.data.message);
 		}
@@ -244,7 +253,7 @@ const ProductEditScreen = () => {
 																width: "100px"
 															}}
 														/><p 
-															onClick={()=>handleDeleteImage(index, img)}
+															onClick={()=>handleDeleteImage(index, `${BASE_URL}/${img}`)}
 															style={{
 																cursor: "pointer",
 																height: "fit-content",
