@@ -2,17 +2,9 @@ import path from "path";
 import fs from "fs";
 import express from "express";
 import multer from "multer";
-import { v2 as cloudinary } from "cloudinary";
 import sharp from "sharp";
 const router = express.Router();
 
-// Cloudinary configuration
-// cloudinary.config({
-//   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-//   api_key: process.env.CLOUDINARY_API_KEY,
-//   api_secret: process.env.CLOUDINARY_API_SECRET,
-//   secure: true
-// });
 const uploadDir = process.env.UPLOAD_DIRECTORY;
 
 [uploadDir, "uploads/", `${uploadDir}/gifs`].forEach((dir) => {
@@ -82,6 +74,28 @@ router.post("/", upload.single("image"), async (req, res) => {
     res.status(500).json({ error: "Image upload failed", details: error });
   }
 })
+
+router.delete("/delete/:fileName", async (req, res) => {
+  try {
+    const { fileName } = req.params;
+    const fileExt = path.extname(fileName).toLowerCase();
+    const targetDir = (fileExt === ".gif") ? `${uploadDir}/gifs` : uploadDir;
+    const filePath = path.join(targetDir, fileName);
+
+    if (!fileName) return res.status(400).json({ message: "Filename is required" });
+    if (!fs.existsSync(filePath)) return res.status(404).json({ message: "File not found" });
+  
+    fs.unlinkSync(filePath);
+
+    res.status(200).json({
+      message: "File deleted successfully",
+      deletedFile: fileName,
+      from: (fileExt === ".gif") ? "gifs directory" : "uploads directory",
+    });
+  } catch (err) {
+    res.status(500).json({ message: "Error deleting file", error: err.message })
+  }
+});
 
 export default router;
 
