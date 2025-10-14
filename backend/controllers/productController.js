@@ -1,5 +1,5 @@
 import asyncHandler from "../middleware/asyncHandler.js";
-import Product, {ProductView} from "../models/productModel.js";
+import Product, { ProductView } from "../models/productModel.js";
 
 //@desc   Fetch all Products
 //@route  GET /api/products
@@ -19,6 +19,19 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
   const products = await ProductView.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
   
   res.json({products, page, pages: Math.ceil(count/pageSize)})
+})
+
+//@desc   Fetch all Products
+//@route  GET /api/products/all
+//@access Private/Admin
+const getAllProducts = asyncHandler(async (req, res) =>{
+  try {
+    const allProducst = await ProductView.find({}).select("_id name price tags variants.variantName totalInStock");
+    res.status(200).json(allProducst)
+  } catch (err) {
+    res.status(400);
+    throw new Error("Failed to fetch all products")
+  } 
 })
 
 //@desc   Fetch a single Product
@@ -135,4 +148,4 @@ const getCategorisedProducts = asyncHandler(async (req, res)=>{
   res.status(200).json(products)
 })
 
-export { getPaginatedProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts };
+export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts };

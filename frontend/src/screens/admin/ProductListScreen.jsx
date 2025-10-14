@@ -3,19 +3,17 @@ import { LinkContainer } from "react-router-bootstrap"
 import { Table, Button, Row, Col } from "react-bootstrap"
 import { FaEdit, FaTrash } from "react-icons/fa"
 import { useSelector } from "react-redux"
-import { useParams } from "react-router-dom"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
 import Paginate from "../../components/Paginate"
 import Meta from "../../components/Meta"
 import { toast } from "react-toastify"
-import { useGetProductsQuery, useCreateProductMutation, useDeleteAnyProductMutation } from "../../slicers/productApiSlice"
+import { useGetAllProductQuery, useCreateProductMutation, useDeleteAnyProductMutation } from "../../slicers/productApiSlice"
 
 const ProductListScreen = () => {
-  const { pageNumber } = useParams()
   const { userInfo } = useSelector((state) => state.auth)
 
-  const { data, isLoading, error, refetch } = useGetProductsQuery({ pageNumber })
+  const { data, isLoading, error, refetch } = useGetAllProductQuery()
   const [createProduct, { isLoading: loadingCreate }] = useCreateProductMutation()
   const [deleteAnyProduct, { isLoading: loadingDelete }] = useDeleteAnyProductMutation()
 
@@ -51,7 +49,7 @@ const ProductListScreen = () => {
         </Col>
         {userInfo && userInfo.role === "admin" && (
           <Col className="text-end">
-            <Button className="btn-sm btn-dark m-3" onClick={createProductHandler}>
+            <Button variant="warning" className="btn-sm btn-dark m-3" onClick={createProductHandler}>
               <FaEdit /> Create Product
             </Button>
           </Col>
@@ -62,23 +60,27 @@ const ProductListScreen = () => {
           <Table striped hover responsive className="table-sm">
             <thead>
               <tr>
+                <th>Sl no.</th>
                 <th>ID</th>
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>TAGS</th>
+                <th>TOTAL STOCK</th>
                 <th>VARIANTS</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
-              {data.products.map((product) => (
+              {data.map((product, index) => (
                 <tr key={product._id}>
+                  <td>{++index}.</td>
                   <td>
-                    <a href={`/product/${product._id}`}>{product._id}</a>
+                    <a href={`/product/${product._id}`} style={{fontSize: "smaller"}}>{product._id}</a>
                   </td>
                   <td>{product.name}</td>
                   <td>₹{product.price}</td>
                   <td className="text-truncate">{product.tags.join(", ")}</td>
+                  <td>{product.totalInStock}</td>
                   <td className="text-truncate">{product.variants?.map(variant => variant.variantName).join(", ")}</td>
                   {userInfo && userInfo.role === "admin" && (
                     <td>
