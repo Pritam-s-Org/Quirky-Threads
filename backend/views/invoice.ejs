@@ -8,10 +8,6 @@
   @page {
     size: A4;
   }
-  @font-face {
-    font-family: 'Segoe UI';
-    src: url("file://<%= fontPath %>") format("truetype");
-  }
   body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #fff;
@@ -87,6 +83,7 @@
     border: none;
     padding: 8px;
     font-size:12px;
+    min-width: 38%;
   }
   .invoice-data .row { display:flex; justify-content:space-between; margin:4px 0; }
   .invoice-data .row span:first-child { color:var(--muted); font-weight:600; }
@@ -219,16 +216,18 @@
         <p><strong><%= billerName %></strong></p>
         <p><%= shippingAddress.address %></p>
         <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
-        <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
+        <p><%= shippingAddress.district %>,</p>
+        <p><%= shippingAddress.state %>.</p>
       </div>
 
       <div class="ship-to">
         <h4>Shipping Address</h4>
         <p><strong><%= shipperName %></strong></p>
+        <p>Phone: +91 <%= shippingAddress.shippingPhoneNumber%> </p>
         <p><%= shippingAddress.address %></p>
         <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
-        <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
-        <p>Phone: +91 <%= shippingAddress.shippingPhoneNumber%> </p>
+        <p><%= shippingAddress.district %>,</p>
+        <p><%= shippingAddress.state %>.</p>
       </div>
 
       <div class="invoice-data">

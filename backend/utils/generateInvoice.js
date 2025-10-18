@@ -23,8 +23,6 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
 
-  const fontPath = path.join(__dirname, "../views/SegoeUI.ttf")
-
 	const invoiceNumber = `QT-${order.paidAt.getFullYear()}-${ await Order.countDocuments({
     paidAt: {
       $gte: new Date(order.paidAt.getFullYear(), 0),
@@ -43,7 +41,6 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 
 	try {
 		const html = await ejs.renderFile(path.join(__dirname, "../views/invoice.ejs"), {
-      fontPath,
 			billerName : order.user.name,
       shipperName: order.shippingAddress.shippingName,
 			shippingAddress: order.shippingAddress,
