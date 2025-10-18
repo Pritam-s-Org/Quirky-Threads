@@ -6,7 +6,7 @@ import Loader from "../components/Loader"
 import Meta from "../components/Meta.jsx"
 import { toast } from "react-toastify"
 import { useSelector } from "react-redux"
-import { useGetOrderDetailsQuery, usePayOrderMutation, useDeliverOrderMutation } from "../slicers/orderApiSlices"
+import { useGetOrderDetailsQuery, usePayOrderMutation, useDeliverOrderMutation, useGenerateOrderInvoiceMutation } from "../slicers/orderApiSlices"
 import { BASE_URL, dateFormatting } from "../constants.js"
 
 const OrderScreen = () => {
@@ -14,7 +14,8 @@ const OrderScreen = () => {
 
   const { data: order, refetch, isLoading, error } = useGetOrderDetailsQuery(orderId)
   const [payOrder, { isLoading: loadingPay }] = usePayOrderMutation()
-  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation()
+  const [deliverOrder, { isLoading: loadingDeliver }] = useDeliverOrderMutation();
+  const [generateOrderInvoice, { isLoading: loadingBill }] = useGenerateOrderInvoiceMutation()
 
   const { userInfo } = useSelector((state) => state.auth)
 
@@ -31,6 +32,14 @@ const OrderScreen = () => {
       toast.success("Order Delivered")
     } catch (err) {
       toast.error(err?.data?.message || err.message)
+    }
+  }
+
+  const downloadInvoice = async () => {
+    try {
+      generateOrderInvoice(orderId)
+    } catch (err) {
+      toast.error(err.data?.message || err.message)
     }
   }
 
@@ -137,7 +146,10 @@ const OrderScreen = () => {
                         <Button className="mx-auto d-grid col-8" onClick={deliverOrderHandler} variant="success">Mark As Delivered</Button>
                       </ListGroup.Item>
                     }
-                    {(loadingDeliver || loadingPay) && <Loader />}
+                    {order.isPaid && <ListGroup.Item>
+                      <Button className="mx-auto d-grid col-8" onClick={downloadInvoice} variant="outline-primary" disabled={loadingBill}>Download Invoice</Button>
+                    </ListGroup.Item>}
+                    {(loadingDeliver || loadingPay || loadingBill) && <Loader />}
                   </ListGroup>
                 </Card>
               </Col>

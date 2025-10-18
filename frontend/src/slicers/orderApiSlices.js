@@ -55,7 +55,7 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
       }),
       keepUnusedDataFor: 5,
     }),
-    markMfdCompleted:builder.mutation({
+    markMfdCompleted: builder.mutation({
       query: ()=>({
         url:`${ORDERS_URL}/preorder`,
         method: "PUT"
@@ -67,8 +67,15 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
         method: "PUT",
         body: {orderId}
       })
+    }),
+    generateOrderInvoice: builder.mutation({
+      query: (orderId) => ({
+        url: `${ORDERS_URL}/getInvoice`,
+        method: "POST",
+        body: {orderId}
+      })
     })
   })
 })
 
-export const { useVerifyOrderStockMutation, useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetMyOrdersQuery, useGetOrdersQuery, useGetPreOrdersQuery, useMarkMfdCompletedMutation, useDeliverOrderMutation } = ordersApiSlices
+export const { useVerifyOrderStockMutation, useCreateOrderMutation, useVerifyRazorpayPaymentMutation, useGetOrderDetailsQuery, usePayOrderMutation, useGetMyOrdersQuery, useGetOrdersQuery, useGetPreOrdersQuery, useMarkMfdCompletedMutation, useDeliverOrderMutation, useGenerateOrderInvoiceMutation } = ordersApiSlices
