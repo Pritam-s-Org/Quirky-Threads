@@ -6,7 +6,7 @@ import Order from "../models/oderModel.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 
 export const generateInvoice = asyncHandler(async (res, orderId)=> {
-  const order = await Order.findById(orderId);
+  const order = await Order.findById(orderId).populate("user", "id name");
 
 	const dateFormatter = (date) => {
 		return new Date(date).toLocaleDateString("en-IN", {
@@ -22,6 +22,8 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 
 	const __filename = fileURLToPath(import.meta.url);
 	const __dirname = path.dirname(__filename);
+
+  const fontPath = path.join(__dirname, "../views/SegoeUI.ttf")
 
 	const invoiceNumber = `QT-${order.paidAt.getFullYear()}-${ await Order.countDocuments({
     paidAt: {
@@ -41,7 +43,9 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 
 	try {
 		const html = await ejs.renderFile(path.join(__dirname, "../views/invoice.ejs"), {
-			customerName : order.user.name,
+      fontPath,
+			billerName : order.user.name,
+      shipperName: order.shippingAddress.shippingName,
 			shippingAddress: order.shippingAddress,
 			invoiceNo : order.invoiceDetails?.invoiceNo || invoiceNumber,
 			invoiceDate: dateFormatter(order.invoiceDetails?.invoiceDate || new Date()),
@@ -56,7 +60,7 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 		})
 
 		const browser = await puppeteer.launch({
-      headless: "new", // newer headless mode
+      headless: "new",
       args: ["--no-sandbox", "--disable-setuid-sandbox"], 
     });
 
@@ -71,7 +75,7 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 		await browser.close();
 
     res.setHeader("Content-Type", "application/pdf");
-    res.setHeader("Content-Disposition", `attachment; filename="OrderInvoice${order.orderId}.pdf"`);
+    res.setHeader("Content-Disposition", `attachment; filename="Invoice_${order.orderId}.pdf"`);
     res.setHeader('Content-Length', pdfBuffer.length);
     res.end(pdfBuffer);
 

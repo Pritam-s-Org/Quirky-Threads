@@ -8,6 +8,10 @@
   @page {
     size: A4;
   }
+  @font-face {
+    font-family: 'Segoe UI';
+    src: url("file://<%= fontPath %>") format("truetype");
+  }
   body {
     font-family: "Segoe UI", Arial, sans-serif;
     background: #fff;
@@ -212,7 +216,7 @@
     <div class="details">
       <div class="bill-to">
         <h4>Billing Address</h4>
-        <p><strong><%= customerName %></strong></p>
+        <p><strong><%= billerName %></strong></p>
         <p><%= shippingAddress.address %></p>
         <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
         <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
@@ -220,7 +224,7 @@
 
       <div class="ship-to">
         <h4>Shipping Address</h4>
-        <p><strong><%= customerName %></strong></p>
+        <p><strong><%= shipperName %></strong></p>
         <p><%= shippingAddress.address %></p>
         <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
         <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
