@@ -37,7 +37,14 @@ const OrderScreen = () => {
 
   const downloadInvoice = async () => {
     try {
-      generateOrderInvoice(orderId)
+      const blob = await generateOrderInvoice(orderId).unwrap();
+      const url = window.URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = `Invoice_${order.orderId}.pdf`
+      link.click();
+
+      window.URL.revokeObjectURL(url)
     } catch (err) {
       toast.error(err.data?.message || err.message)
     }
