@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title><%= orderId %> | Invoice | Quirky Threads</title>
+<style>
+  @page {
+    size: A4;
+  }
+  body {
+    font-family: "Segoe UI", Arial, sans-serif;
+    background: #fff;
+    color: #000;
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    position: relative;
+    min-height: 100vh;
+  }
+
+  .invoice-container {
+    max-width: 800px;
+    margin: auto;
+    border: 1px solid #000;
+    padding: 20px;
+  }
+
+  /* Header */
+  .header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+  .brand-info {
+    width: 65%;
+  }
+  .brand-info h2 {
+    margin: 0;
+    font-size: 20px;
+    text-transform: uppercase;
+  }
+  .brand-info p {
+    margin: 3px 0;
+    font-size: 13px;
+  }
+  .logo {
+    text-align: right;
+  }
+  .logo img {
+    max-height: 100px;
+  }
+
+  /* 3-column section: billing, shipping, invoice details */
+  .details {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 15px;
+    border-bottom: 2px solid #000;
+    padding-bottom: 10px;
+  }
+  .details > div {
+    width: 32%;
+    border: none;
+    padding: 10px;
+    box-sizing: border-box;
+    font-size: 13px;
+  }
+  .details h4 {
+    margin: 0 0 8px 0;
+    font-size: 14px;
+    text-transform: uppercase;
+    border-bottom: 1px solid #000;
+    padding-bottom: 3px;
+  }
+  .details p {
+    margin: 3px 0;
+  }
+
+  .invoice-data {
+    border: none;
+    padding: 8px;
+    font-size:12px;
+  }
+  .invoice-data .row { display:flex; justify-content:space-between; margin:4px 0; }
+  .invoice-data .row span:first-child { color:var(--muted); font-weight:600; }
+
+  /* Items table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 15px;
+    font-size: 13px;
+    border: 1px solid black;
+  }
+  th, td {
+    border-left: 1px solid black; /* Vertical borders for columns */
+    border-right: 1px solid black; /* Vertical borders for columns */
+    padding: 8px; /* Add some spacing within cells */
+    text-align: left;
+  }
+  th {
+    text-transform: uppercase;
+    font-size: 13px;
+    text-align: center;
+    border-bottom: 1px solid black;
+  }
+  td {
+    vertical-align: top;
+  }
+
+  /* Remove border after SL No column */
+  td:first-child, th:first-child {
+    border-right: none;
+    width: 5%;
+    text-align: center;
+  }
+  tr:last-child {
+    border-top: 1px solid black;
+  }
+
+  /* Totals table */
+  .totals {
+    width: 350px;
+    margin-left: auto;
+    margin-top: 15px;
+  }
+  .totals table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13px;
+  }
+  .totals th, .totals td {
+    border: 1px solid #000;
+    padding: 8px;
+  }
+  .totals tr:last-child td {
+    font-weight: bold;
+    font-size: 14px;
+  }
+  /* numeric */
+  .text-right { text-align: right; }
+  .text-center { text-align: center; }
+  .small { font-size:11px; color: #111; }
+  .medium { font-size:14px; color: #111; }
+
+  /* Footer / Notes */
+    .signature {
+    margin-top: 20px;
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-end;
+  }
+  .sig-box {
+    width: 250px;
+    text-align:center;
+  }
+  .sig-line {
+    height: 2px;
+    background: #000;
+    margin-bottom:6px;
+  }
+  .bank {
+    font-size:12px;
+  }
+
+  /* small foot */
+  footer {
+    margin-top: 26px;
+    border-top: 1px solid #000;
+    padding-top:8px;
+    font-size: 11px;
+    text-align: center;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    color: #555;
+  }
+  .text-center {
+    text-align: center;
+  }
+  .text-right {
+    text-align: right;
+  }
+
+  @media print {
+    body { margin: 0; }
+    .invoice-container { border: none; }
+  }
+</style>
+</head>
+<body>
+  <div class="invoice-container">
+    <div class="header">
+      <div class="brand-info">
+        <h2>Quirky Threads</h2>
+        <p>123 Fashion Street, Block A</p>
+        <p>Kolkata, West Bengal - 700001</p>
+        <p>GSTIN: 19ABCDE1234F1Z5</p>
+        <p>Email: QUIRKYTHREADSINDIA@GMAIL.COM</p>
+        <p>Mobile: +91 81006 43812</p>
+      </div>
+      <div class="logo">
+        <img src="http://localhost:5000/images/QtLogoRmBg.png" alt="Quirky Threads Logo" width="120px">
+      </div>
+    </div>
+    <div class="row"><span>Order ID: </span><span><b><%= orderId %></b></span></div>
+    <div class="details">
+      <div class="bill-to">
+        <h4>Billing Address</h4>
+        <p><strong><%= customerName %></strong></p>
+        <p><%= shippingAddress.address %></p>
+        <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
+        <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
+      </div>
+
+      <div class="ship-to">
+        <h4>Shipping Address</h4>
+        <p><strong><%= customerName %></strong></p>
+        <p><%= shippingAddress.address %></p>
+        <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
+        <p><%= shippingAddress.district %>, <%= shippingAddress.state %>.</p>
+        <p>Phone: +91 <%= shippingAddress.shippingPhoneNumber%> </p>
+      </div>
+
+      <div class="invoice-data">
+        <h4>Invoice Details</h4>
+        <div class="row"><span>Invoice No:</span><span><%= invoiceNo %></span></div>
+        <div class="row"><span>Invoice Generated:</span><span><%= invoiceDate %></span></div>
+        <div class="row"><span>Paid Date:</span><span><%= paymentDate %></span></div>
+        <div class="row"><span>Place of Supply:</span><span><%= shippingAddress.state %></span></div>
+      </div>
+    </div>
+
+    <!-- Items Table -->
+    <table>
+      <thead>
+        <tr>
+          <th>Sl.</th>
+          <th>Product</th>
+          <th>MRP</th>
+          <th>Offer Price</th>
+          <th>Qty</th>
+          <th>Total</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let subTotal = 0; %>
+        <% orderItems.forEach((item, index) => { %>
+          <tr>
+            <td><%= index + 1 %>.</td>
+            <td><%= item.name %><br><small>Color: <%= item.variantColor %> • Size: <%= item.size %></small></td>
+            <td class="text-center"><%= (item.printedPrice || item.price || 0).toFixed(2) %></td> <%# The final Item Price %>
+            <td class="text-center"><%= (item.price || 0).toFixed(2) %></td> <%# The final Item Price %>
+            <td class="text-center"><%= item.qty %></td>
+            <td class="text-center"><%= ((( item.price || 0) * item.qty) || 0).toFixed(2) %></td>
+          </tr>
+          <% subTotal += (( item.price || 0) * item.qty) %>
+        <% }); %>
+        <tr>
+          <td></td>
+          <td>Subtotal</td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td class="text-center"><%= (subTotal || 0).toFixed(2) %></td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="totals">
+      <div class="invoice-data">
+        <div class="row"><span>Shipping</span><span><%= (shippingPrice || 0).toFixed(2) %></span></div>
+        <div class="row"><span>Handling</span><span><%= (secureTransactionFee || 0).toFixed(2) %></span></div>
+        <%# <div class="row"><span>CGST @2.5%</span><span></span></div> %>
+        <%# <div class="row"><span>SGST @2.5%</span><span></span></div> %>
+        <div class="row medium"><span>Grand Total</span><span><%= ((subTotal + shippingPrice + secureTransactionFee) || 0).toFixed(2) %></span></div>
+      </div>
+    </div>
+
+    <div class="signature">
+      <div style="flex:1;">
+        <p class="small">For any queries regarding this invoice, contact <b>QuirkyThreadsIndia@Gmail.Com</b></p>
+      </div>
+      <div class="sig-box">
+        <div><img src="http://localhost:5000/images/Signature.png" alt="Authorised Signature" height="70px" width="120px"></div>
+        <div class="sig-line"></div>
+        <div style="font-size:12px;">Authorised Signatory</div>
+      </div>
+    </div>
+
+    <footer>
+      This is a system-generated invoice. For queries, contact us on our mailobx - quirkythreadsindia@gmail.com<br>
+      © Quirky Threads Pvt. Ltd. | CIN: U12345WB2025PTC000000
+    </footer>
+  </div>
+</body>
+</html>

@@ -5,6 +5,7 @@ import Product, { ProductView } from "../models/productModel.js";
 import razorpay from "../config/razorpay.js";
 import mongoose from "mongoose";
 import User from "../models/userModel.js";
+import { generateInvoice } from "../utils/generateInvoice.js";
 
 const verifyOrderStock = async (req, res) => {
 	const orderItems = req.body.cartItems; // Expected: [{ keyId, qty }]
@@ -132,10 +133,13 @@ const addOrderItems = asyncHandler(async (req, res) => {
 				orderItems.map(async (item) => {
 					const product = await Product.findById(item._id);
 					if (!product) throw new Error("Product not found.");
+
 					const variant = product.variants.find((v) => v.variantName === item.variants.variantName);
 					if (!variant) throw new Error("Variant could not found.");
+
 					const sizeObj = variant.sizes.find((s) => s.size === item.variants.sizes.size);
 					if (!sizeObj) throw new Error("Size counld not found.");
+
 					if (sizeObj.stock < item.qty) {
 						res.status(400);
 						throw new Error("Selected item is fully sold out already.");
@@ -335,15 +339,24 @@ const getOrders = asyncHandler(async (req, res) => {
 //@route  GET /api/orders/preorder
 //@access Private/Admin or Manufacturer
 const preOrderedItems =asyncHandler(async (req, res) => {
-	const orders = await Order.find({"preOrderFee": {"$exists": true}}).select("-shippingAddress -totalPrice -user").sort({"updatedAt" : -1});
-	res.status(200).json(orders);
+	try {
+		const orders = await Order
+			.find({"preOrderFee": {"$exists": true}})
+			.select("-shippingAddress -totalPrice -user")
+			.sort({"updatedAt" : -1});
+
+		res.status(200).json(orders);
+	} catch (err) {
+		res.status(400);
+		throw new Error("Error while fetching pre ordered items.")
+	}
 });
 
 //@desc   Get pre-ordered items for manufacturer
 //@route  PUT /api/orders/preorder
 //@access Private/Admin or Manufacturer
 const updateOrderToManufactured = asyncHandler(async (req, res) => {
-const order = await Order.findById(req.body.orderId);
+	const order = await Order.findById(req.body.orderId);
 
 	if (!order) {
 		res.status(404);
@@ -366,6 +379,32 @@ const order = await Order.findById(req.body.orderId);
 	}
 });
 
+const generateBill = asyncHandler(async(req, res)=>{
+	const { orderId } = req.body
+	const user = await User.findById(req.user._id)
+	const order = await Order.findById(orderId);
+	if (String(req.user._id) === String(order.user._id) || user.role === "admin") {
+		if (!order) {
+			res.status(404);
+			throw new Error("Order not found");
+		}
+		if (!order.isPaid) {
+			res.status(400);
+			throw new Error("Payment hasn't done yet.");
+		}
+		try {
+			generateInvoice(res, orderId);
+		} catch (err) {
+			console.error("PDF Generation Error>>>", new Date().toISOString(), "==>", err);
+			res.status(500)
+			res.send("Error while generating invoice");
+		}
+	} else {
+		res.status(401);
+		throw new Error("You are not authorized to view others orders.")
+  }
+})
+
 export {
 	verifyOrderStock,
 	addOrderItems,
@@ -377,4 +416,5 @@ export {
 	getOrders,
 	preOrderedItems,
 	updateOrderToManufactured,
+	generateBill
 };

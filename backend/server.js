@@ -35,6 +35,7 @@ app.use("/api/upload", uploadRoutes);
 
 const __dirname = path.resolve(); //Set the __dirname to current directory
 app.use("/uploads", express.static(path.join(__dirname, "/uploads")))
+app.use('/images', express.static(path.join(__dirname, "/public/images")));
 
 if (process.env.NODE_ENV === "production") {
   //set static folder
