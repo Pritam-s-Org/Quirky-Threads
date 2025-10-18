@@ -51,7 +51,8 @@ export const generateInvoice = asyncHandler(async (res, orderId)=> {
 			totalAmount: order.totalPrice,
 			shippingPrice: order.shippingPrice,
 			totalPrice: order.totalPrice,
-			secureTransactionFee: order.secureTransactionFee
+			secureTransactionFee: order.secureTransactionFee,
+      port: process.env.PORT
 		})
 
 		const browser = await puppeteer.launch({
