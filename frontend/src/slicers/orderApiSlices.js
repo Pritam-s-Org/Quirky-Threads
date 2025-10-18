@@ -72,7 +72,11 @@ export const ordersApiSlices = apiSlice.injectEndpoints({
       query: (orderId) => ({
         url: `${ORDERS_URL}/getInvoice`,
         method: "POST",
-        body: {orderId}
+        body: {orderId},
+        responseHandler: async (res)=> {
+          const blob = await res.blob();
+          return blob;
+        }
       })
     })
   })
