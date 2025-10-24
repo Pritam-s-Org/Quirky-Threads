@@ -1,4 +1,4 @@
-import { sendNewPasswordEmail, sendOTPEmail } from "../config/nodemailer.js";
+import { sendNewPasswordEmail, sendOTPEmail } from "../utils/sendMail.js";
 import asyncHandler from "../middleware/asyncHandler.js";
 import User from "../models/userModel.js";
 import generateToken from "../utils/generateToken.js";
@@ -211,6 +211,11 @@ const updateUserProfile = asyncHandler (async (req, res)=>{
   const user = await User.findById(req.user._id)
 
   const bodyEmail = req.body.email || "";
+
+  if (!bodyEmail) {
+    res.status(400)
+    throw new Error("Couldn't get any email id from user.");
+  }
 
   if (user.email !== bodyEmail && (req.app.locals.otpStore[bodyEmail] !== "verified" || !req.app.locals.otpStore[bodyEmail])) {
     res.status(400)
