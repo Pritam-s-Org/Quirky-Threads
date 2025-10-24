@@ -76,9 +76,11 @@ export const productApiSlice = apiSlice.injectEndpoints({
       keepUnusedDataFor:5
     }),
     getCategorisedProduct: builder.query({
-      query : (category) =>({
-        url : `${PRODUCTS_URL}/category/${category}`,
-        method : "GET"
+      query : ({category = []}) =>({
+        url : `${PRODUCTS_URL}/category`,
+        params: {
+          categories: category.join(',')
+        }
       })
     })
   })

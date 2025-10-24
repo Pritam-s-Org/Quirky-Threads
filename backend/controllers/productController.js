@@ -144,8 +144,15 @@ const getTopProducts = asyncHandler(async (req, res)=>{
 //@route  GET /api/products/category/:category
 //@access Public
 const getCategorisedProducts = asyncHandler(async (req, res)=>{
-  const products = await Product.find({tags : req.params.category})
-  res.status(200).json(products)
+  const { categories } = req.query;
+  const allCategories = categories.split(",")
+  try {
+    const products = await ProductView.find({"categories": {"$in": allCategories}}).select("-user -tags -description -reviews -createdAt -updatedAt")
+    res.status(200).json(products);
+  } catch (err) {
+    res.status(400);
+    throw new Error(`Failed to fetch Catogories data.\n${err}`)
+  }
 })
 
 export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts };
