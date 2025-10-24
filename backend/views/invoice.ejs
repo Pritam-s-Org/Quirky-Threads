@@ -83,7 +83,7 @@
     border: none;
     padding: 8px;
     font-size:12px;
-    min-width: 38%;
+    min-width: 36%;
   }
   .invoice-data .row { display:flex; justify-content:space-between; margin:4px 0; }
   .invoice-data .row span:first-child { color:var(--muted); font-weight:600; }
@@ -201,7 +201,6 @@
         <h2>Quirky Threads</h2>
         <p>123 Fashion Street, Block A</p>
         <p>Kolkata, West Bengal - 700001</p>
-        <p>GSTIN: 19ABCDE1234F1Z5</p>
         <p>Email: QUIRKYTHREADSINDIA@GMAIL.COM</p>
         <p>Mobile: +91 81006 43812</p>
       </div>
@@ -225,7 +224,7 @@
         <p><strong><%= shipperName %></strong></p>
         <p>Phone: +91 <%= shippingAddress.shippingPhoneNumber%> </p>
         <p><%= shippingAddress.address %></p>
-        <p><%= shippingAddress.city %>, - <%= shippingAddress.pinCode %></p>
+        <p><%= shippingAddress.city %> - <%= shippingAddress.pinCode %></p>
         <p><%= shippingAddress.district %>,</p>
         <p><%= shippingAddress.state %>.</p>
       </div>
@@ -233,8 +232,7 @@
       <div class="invoice-data">
         <h4>Invoice Details</h4>
         <div class="row"><span>Invoice No:</span><span><%= invoiceNo %></span></div>
-        <div class="row"><span>Invoice Generated:</span><span><%= invoiceDate %></span></div>
-        <div class="row"><span>Paid Date:</span><span><%= paymentDate %></span></div>
+        <div class="row"><span>Paid On:</span><span><%= new Date(paymentDate).toLocaleString("en-IN") %></span></div>
         <div class="row"><span>Place of Supply:</span><span><%= shippingAddress.state %></span></div>
       </div>
     </div>
@@ -281,6 +279,7 @@
         <div class="row"><span>Handling</span><span><%= (secureTransactionFee || 0).toFixed(2) %></span></div>
         <%# <div class="row"><span>CGST @2.5%</span><span></span></div> %>
         <%# <div class="row"><span>SGST @2.5%</span><span></span></div> %>
+        <hr/>
         <div class="row medium"><span>Grand Total</span><span><%= ((subTotal + shippingPrice + secureTransactionFee) || 0).toFixed(2) %></span></div>
       </div>
     </div>
@@ -298,7 +297,8 @@
 
     <footer>
       This is a system-generated invoice. For queries, contact us on our mailobx - quirkythreadsindia@gmail.com<br>
-      © Quirky Threads Pvt. Ltd. | CIN: U12345WB2025PTC000000
+      © Quirky Threads Pvt. Ltd. 
+      <div class="row small"><span>This invoice has been generated on — </span><span><%= lastGenerated %></span></div>
     </footer>
   </div>
 </body>

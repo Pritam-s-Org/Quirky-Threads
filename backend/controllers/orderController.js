@@ -393,15 +393,19 @@ const generateBill = asyncHandler(async(req, res)=>{
 			throw new Error("Payment hasn't done yet.");
 		}
 		try {
-			generateInvoice(res, orderId);
+			const pdfBuffer = await generateInvoice(orderId);
+			res.setHeader("Content-Type", "application/pdf");
+			res.setHeader("Content-Disposition", `attachment; filename="Invoice_${order.orderId}.pdf"`);
+			res.setHeader("Content-Length", pdfBuffer.length);
+			res.end(pdfBuffer);
 		} catch (err) {
-			console.error("PDF Generation Error>>>", new Date().toISOString(), "==>", err);
+			console.log("PDF Generation Error>>>", new Date().toLocaleString("en-IN"), "==>", err);
 			res.status(500)
 			res.send("Error while generating invoice");
 		}
 	} else {
 		res.status(401);
-		throw new Error("You are not authorized to view others orders.")
+		throw new Error("You are not authorized to view others bills.")
   }
 })
 
