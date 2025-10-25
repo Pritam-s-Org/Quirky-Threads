@@ -79,7 +79,7 @@ const ProductListScreen = () => {
               </tr>
             </thead>
             <tbody>
-              {allProducts.map((product, index) => (
+              {allProducts?.map((product, index) => (
                 <tr key={product._id}>
                   <td>{++index}.</td>
                   <td>

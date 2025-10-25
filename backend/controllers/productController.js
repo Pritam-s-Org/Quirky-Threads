@@ -141,7 +141,7 @@ const getTopProducts = asyncHandler(async (req, res)=>{
 })
 
 //@desc   Fetch Product based on category
-//@route  GET /api/products/category/:category
+//@route  GET /api/products/category
 //@access Public
 const getCategorisedProducts = asyncHandler(async (req, res)=>{
   const { categories } = req.query;

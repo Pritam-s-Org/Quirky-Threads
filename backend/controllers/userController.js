@@ -188,7 +188,7 @@ const logoutUser = asyncHandler (async (req, res)=>{
 //@access Private
 const getUserProfile = asyncHandler (async (req, res)=>{
   // res.send("Get user Profile.")
-  const user = await User.findById(req.user._id)
+  const user = await User.findById(req.user._id).populate("wishlist", "_id name rating price totalInStock numReviews")
 
   if(user){
     res.status(200).json({
@@ -196,7 +196,8 @@ const getUserProfile = asyncHandler (async (req, res)=>{
       name: user.name,
       email: user.email,
       mobileNo: user.mobileNo,
-      role: user.role
+      role: user.role,
+      wishlist: user.wishlist
     })
   } else {
     res.status(404)
@@ -315,6 +316,46 @@ const updateUsersByID = asyncHandler (async (req, res)=>{
   }
 })
 
+//@desc   Add product into users wishlist
+//@route  PUT /api/users/wishlist
+//@access Public
+const wishlistProducts = asyncHandler( async(req, res)=>{
+  const selectedProductId = req.body.productId
+  try {
+    const user = await User.findById(req.user._id).select("-password");
+
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    } else if (!selectedProductId) {
+      return res.status(400).json({ message: "Product ID is required" });
+    }
+
+    const alreadyWishlisted = user.wishlist.some(
+      (item) => item.toString() === selectedProductId
+    );
+
+    if (alreadyWishlisted) {
+      user.wishlist = user.wishlist.filter(
+        (item) => item.toString() !== selectedProductId
+      );
+    } else {
+      user.wishlist.push(selectedProductId);
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({
+      message: alreadyWishlisted
+        ? "Removed from wishlist"
+        : "Added to wishlist",
+      userData: updatedUser,
+    });
+  } catch (err) {
+    console.error("Error updating wishlist:", err);
+    res.status(500).json({ message: "Unable to set the wishlist for user" });
+  }
+})
+
 export { sendOtp,
   verifyOtp,
   authUser, 
@@ -325,5 +366,6 @@ export { sendOtp,
   getUsers, 
   getUsersByID, 
   deleteUser, 
-  updateUsersByID
+  updateUsersByID,
+  wishlistProducts
 };
