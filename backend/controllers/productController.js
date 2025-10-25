@@ -5,7 +5,7 @@ import Product, { ProductView } from "../models/productModel.js";
 //@route  GET /api/products
 //@access Public
 const getPaginatedProducts = asyncHandler (async (req, res)=>{
-  const pageSize = 4;
+  const pageSize = Number(req.query.pageSize || 4);
   const page = Number(req.query.pageNumber);
   const keyword = req.query.keyword ? {
       $or: [
@@ -15,8 +15,11 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
     }
   : {};
 
-  const count = await Product.countDocuments({...keyword})
-  const products = await ProductView.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
+  const count = await ProductView.countDocuments({...keyword})
+  const products = await ProductView.find({...keyword})
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .select("-user -tags -description -reviews -createdAt -updatedAt");;
   
   res.json({products, page, pages: Math.ceil(count/pageSize)})
 })
@@ -144,14 +147,18 @@ const getTopProducts = asyncHandler(async (req, res)=>{
 //@route  GET /api/products/category
 //@access Public
 const getCategorisedProducts = asyncHandler(async (req, res)=>{
-  const { categories } = req.query;
-  const allCategories = categories.split(",")
+  const pageSize = 40;
+  const page = Number(req.query.pageNumber || 1);
   try {
-    const products = await ProductView.find({"categories": {"$in": allCategories}}).select("-user -tags -description -reviews -createdAt -updatedAt")
-    res.status(200).json(products);
+    const count = await ProductView.countDocuments({"categories":  req.query.category})
+    const products = await ProductView.find({"categories":  req.query.category})
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .select("-user -tags -description -reviews -createdAt -updatedAt");
+    
+    res.json({products, page, pages: Math.ceil(count/pageSize)})
   } catch (err) {
-    res.status(400);
-    throw new Error(`Failed to fetch Catogories data.\n${err}`)
+    res.status(404).json({message: "Couldn't find the category that you've asked for."})
   }
 })
 

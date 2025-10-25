@@ -1,0 +1,106 @@
+#banner {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  background-image: url("../images/b2.jpg");
+  width: 100%;
+  height: 40vh;
+  background-size: cover;
+  background-position: center;
+}
+
+#banner h4 {
+  color: #fff;
+  font-size: 16px;
+}
+
+#banner h2 {
+  color: #fff;
+  font-size: 30px;
+  padding: 10px 0;
+}
+
+#banner h2 span {
+  color: #ef3636;
+}
+
+#banner button:hover {
+  background: #f39c12;
+  color: #fff;
+}
+
+#banner button {
+  max-width: 16rem;
+  background: whitesmoke;
+  color: black;
+}
+
+.half-banner {
+  height: 50vh;
+  background-size: cover;
+  background-position: center;
+  padding: 30px;
+  margin: 2% ;
+  color: whitesmoke;
+  border-radius: 10px;
+}
+
+.half-banner h4 {
+  color: whitesmoke;
+  font-size: 20px;
+  font-weight: 300;  
+}
+
+.half-banner h2 {
+  color: whitesmoke;
+  font-size: 28px;
+  font-weight: 800;
+}
+
+.one-third-banner {
+  min-width: 27.8%;
+  height: 30vh;
+  background-size: cover;
+  background-position: center;
+  padding: 20px;
+  margin: 1% ;
+  color: whitesmoke;
+  border-radius: 8px;
+}
+
+.one-third-banner a {
+  text-decoration: none;
+  display: block;
+  width: 100%;
+  height: 100%;     
+}
+
+.one-third-banner h2{
+  color: whitesmoke;
+  font-weight: 900;
+  font-size: 1.8rem;
+  -webkit-text-stroke: 0.8px black;
+}
+.one-third-banner h3{
+  color: #ec544e;
+  font-weight: 800;
+  font-size: 1.1rem;
+}
+
+#banner-box1 {
+  background-image: url("../images/b3.jpg");
+}
+#banner-box2 {
+  background-image: url("../images/b4.jpg")
+}
+#banner-box3 {
+  background-image: url("../images/b5.jpg")
+}
+#banner-box4 {
+  background-image: url("../images/b6.jpg")
+}
+#banner-box5 {
+  background-image: url("../images/b7.jpeg")
+}

@@ -351,12 +351,12 @@ const wishlistProducts = asyncHandler( async(req, res)=>{
       userData: updatedUser,
     });
   } catch (err) {
-    console.error("Error updating wishlist:", err);
     res.status(500).json({ message: "Unable to set the wishlist for user" });
   }
 })
 
-export { sendOtp,
+export {
+  sendOtp,
   verifyOtp,
   authUser, 
   registerUser, 

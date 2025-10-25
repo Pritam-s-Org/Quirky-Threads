@@ -40,7 +40,7 @@ const Header = () => {
               <img src={logo} alt="Quirky Threads Brand" height="60px" className="brand navbar-brand" />
             </Navbar.Brand>
           </LinkContainer>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" className="btn-danger" />
+          <Navbar.Toggle aria-controls="basic-navbar-nav" className="btn-danger border-3" />
           <Navbar.Collapse id="basic-navbar-nav">
             <Nav className="ms-auto">
               <SearchBox />
