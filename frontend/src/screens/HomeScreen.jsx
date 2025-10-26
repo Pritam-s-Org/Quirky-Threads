@@ -74,6 +74,7 @@ const HomeScreen = () => {
         <h2>Up to <span>50% off</span> on All T-Shirts</h2>
         <Button>Explore More</Button>
       </Row>
+      <hr />
       <Col className="d-flex flex-column align-items-center mt-4">
         <h1>Featured Products</h1>
         <p className="text-center">Products That Are Most Favourite of Our Customers<br />Make One of Them For Yours</p>
@@ -100,6 +101,7 @@ const HomeScreen = () => {
           ))}
         </Row>
         <Paginate pages={data.pages} page={data.page} keyword={keyword ? keyword : ""} /> */}
+        <hr />
       <Col>
         <Row className="justify-content-center">
           <Col className="half-banner" id="banner-box1" xs={10} sm={10} md={10} lg={5} xl={5}>

@@ -46,7 +46,7 @@ const LoginScreen = () => {
   }
 
   return (
-    <Card>
+    <Card className="px-4">
     <Meta title={"Quirky Threads | Login"}/>
       <FormContainer>
         <h1>Sign In</h1>

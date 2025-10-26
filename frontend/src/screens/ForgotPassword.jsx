@@ -80,7 +80,7 @@ const ForgotPassword = () => {
   }
 
 	return (
-		<Card>
+		<Card className="px-4">
 			<Meta title={"Quirky Threads | Forgot Password"} />
 			<FormContainer>
 				<h1>Forgot password</h1>

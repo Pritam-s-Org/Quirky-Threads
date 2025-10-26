@@ -57,7 +57,7 @@ const OrderScreen = () => {
           <Message variant="danger">{error?.data?.message || error.error}</Message>
           </>
         ) : (
-          <>
+          <Col className="px-4">
             <Meta title={`Quirky Threads | Order-${order._id}`} />
             <h1>Order Id: {order.orderId}</h1>
             <Row>
@@ -161,7 +161,7 @@ const OrderScreen = () => {
                 </Card>
               </Col>
             </Row>
-          </>
+          </Col>
         )
   )
 }

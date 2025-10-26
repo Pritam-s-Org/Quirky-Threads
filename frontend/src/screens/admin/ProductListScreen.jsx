@@ -48,7 +48,7 @@ const ProductListScreen = () => {
   }
 
   return (
-    <div>
+    <Col className="px-4">
       <Meta title={"Admin | Product List | Quirky Threads"} />
       <Row className="align-items-center">
         <Col>
@@ -109,7 +109,7 @@ const ProductListScreen = () => {
           <Paginate pages={data.pages} page={data.page} isAdmin={true} />
         </>
       )}
-    </div>
+    </Col>
   )
 }
 

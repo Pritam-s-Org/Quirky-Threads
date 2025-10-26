@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Col, Row, Image, ListGroup, Card, Button, Carousel, Container } from "react-bootstrap";
+import { Form, Col, Row, Image, ListGroup, Card, Button, Carousel } from "react-bootstrap";
 import { FaArrowCircleLeft, FaCartPlus } from "react-icons/fa"
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
@@ -77,7 +77,7 @@ const ProductScreen = () => {
   }
 
   return (
-    <Container>
+    <Col className="px-4">
       <Link className="btn btn-light my-3" to="/"><FaArrowCircleLeft /> Back</Link>
       {isLoading ? (
         <Loader />
@@ -92,7 +92,7 @@ const ProductScreen = () => {
           description={product.description}
         />
           <Row>
-            <Col md={5}>
+            <Col md={5} lg={4}>
               <Carousel pause="hover" className="bg-warning mb-4" interval={5000} fade indicators={false}>
                 {selectedVariant?.images?.map(image => (
                   <Carousel.Item key={image}>
@@ -108,7 +108,7 @@ const ProductScreen = () => {
                 ))}
               </Carousel>
             </Col>
-            <Col md={4}>
+            <Col md={4} lg={5}>
               <ListGroup variant="flush">
                 <ListGroup.Item>
                   <h3>{product.name} ({selectedVariant?.variantName || product.variants[0].variantName})</h3>
@@ -289,7 +289,7 @@ const ProductScreen = () => {
           </Row>
         </>
       )}
-    </Container>
+    </Col>
   )
 }
 

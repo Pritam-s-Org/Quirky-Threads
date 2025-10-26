@@ -78,7 +78,7 @@ const CartScreen = () => {
 	}, [productStatus]);
 
 	return (
-		<Row>
+		<Row className="px-4">
 			<Meta title={"Quirky Threads | Cart"} />
 			<Col md={8}>
 				<h1 style={{ marginBottom: "20px" }}>Shopping Cart</h1>

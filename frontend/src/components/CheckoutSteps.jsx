@@ -1,12 +1,12 @@
 import React from "react";
-import { Nav, ProgressBar } from "react-bootstrap";
+import { Container, Nav, ProgressBar } from "react-bootstrap";
 import { LinkContainer } from "react-router-bootstrap";
 
 const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
   const steps = [step1, step2, step3, step4];
 
   return (
-    <>
+    <Container className="max-width-80vw">
       <Nav className="justify-content-center mb-1">
         <Nav.Item>
           {step1 ? (
@@ -46,7 +46,7 @@ const CheckoutSteps = ({ step1, step2, step3, step4 }) => {
         </Nav.Item>
       </Nav>
       <ProgressBar variant="warning" now={steps.filter(Boolean).length*25} className="mb-3 mt-0" style={{height: "8px"}} label={steps[1]}/>
-    </>
+    </Container>
   )
 }
 
