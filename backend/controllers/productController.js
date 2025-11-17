@@ -29,7 +29,7 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
 //@access Private/Admin
 const getAllProducts = asyncHandler(async (req, res) =>{
   try {
-    const allProducst = await ProductView.find({}).select("_id name price tags variants.variantName totalInStock");
+    const allProducst = await ProductView.find({}).select("_id name price tags variants.variantName totalInStock categories");
     res.status(200).json(allProducst)
   } catch (err) {
     res.status(400);
@@ -162,4 +162,17 @@ const getCategorisedProducts = asyncHandler(async (req, res)=>{
   }
 })
 
-export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts };
+//@desc   Fetch Product based on category
+//@route  GET /api/products/category
+//@access Public
+const getAllCategories = asyncHandler(async (req, res)=>{
+  try {
+    const categories = await ProductView.distinct("categories")
+    
+    res.status(200).json({categories})
+  } catch (err) {
+    res.status(404).json({message: "Couldn't find any category list that you've asked for."})
+  }
+})
+
+export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts, getAllCategories };

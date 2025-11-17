@@ -104,13 +104,13 @@ const HomeScreen = () => {
         <hr />
       <Col>
         <Row className="justify-content-center">
-          <Col className="half-banner" id="banner-box1" xs={10} sm={10} md={10} lg={5} xl={5}>
+          <Col className="half-banner overflow-auto h-sm-60" id="banner-box1" xs={10} sm={10} md={10} lg={5} xl={5}>
             <h4>Crazy Deals</h4>
             <h2>Buy 1 get 1 free</h2>
             <p>The cool tees are on sale</p>
             <Button variant="outline-light hover-popup-animation" className="transparent"><b>Explore</b></Button>
           </Col>
-          <Col className="half-banner" id="banner-box2" xs={10} sm={10} md={10} lg={5} xl={5}>
+          <Col className="half-banner overflow-auto h-sm-60" id="banner-box2" xs={10} sm={10} md={10} lg={5} xl={5}>
             <h4>Durga Puja & Diwali</h4>
             <h2>Upcoming designes</h2>
             <p>You find the best designes here</p>

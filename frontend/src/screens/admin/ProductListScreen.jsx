@@ -73,6 +73,7 @@ const ProductListScreen = () => {
                 <th>NAME</th>
                 <th>PRICE</th>
                 <th>TAGS</th>
+                <th>CATEGORIES</th>
                 <th>TOTAL STOCK</th>
                 <th>VARIANTS</th>
                 <th></th>
@@ -88,6 +89,7 @@ const ProductListScreen = () => {
                   <td>{product.name}</td>
                   <td>₹{product.price}</td>
                   <td className="text-truncate">{product.tags.join(", ")}</td>
+                  <td className="text-truncate">{product.categories.join(", ")}</td>
                   <td>{product.totalInStock}</td>
                   <td className="text-truncate">{product.variants?.map(variant => variant.variantName).join(", ")}</td>
                   {userInfo && userInfo.role === "admin" && (

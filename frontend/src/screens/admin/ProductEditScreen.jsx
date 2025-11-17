@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Spinner, Table, Row, Col, Image } from "react-bootstrap";
+import { Form, Button, Spinner, Table, Row, Col, Image, Container } from "react-bootstrap";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Meta from "../../components/Meta";
@@ -119,7 +119,7 @@ const ProductEditScreen = () => {
 	}	
 	
 	return (
-		<>
+		<Container>
 			<Meta title={`Admin | ${name} | Quirky Threads`} />
 			<Link to="/admin/productlist" className="btn btn-light my-3">
 				Go back
@@ -324,7 +324,7 @@ const ProductEditScreen = () => {
 					</Form>
 				)}
 			</Row>
-		</>
+		</Container>
 	);
 };
 

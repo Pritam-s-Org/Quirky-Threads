@@ -1,7 +1,7 @@
 import React from 'react'
 import { useState, useEffect } from "react"
 import { Link, useNavigate, useParams } from "react-router-dom"
-import { Form, Button } from "react-bootstrap"
+import { Form, Button, Container } from "react-bootstrap"
 import { FaCopy, FaCheck, FaEraser } from "react-icons/fa"
 import Message from "../../components/Message"
 import Loader from "../../components/Loader"
@@ -71,8 +71,8 @@ const UserEditScreen = () => {
   }
 
   return (
-    <>
-        <Meta title={"Admin | Edit User | Quirky Threads"}/>
+    <Container>
+      <Meta title={"Admin | Edit User | Quirky Threads"}/>
       <Link to="/admin/userlist" className="btn btn-light my-3">Go back</Link>
       <FormContainer>
         <h1>Edit User</h1>
@@ -192,7 +192,7 @@ const UserEditScreen = () => {
             </Form>
           )}
       </FormContainer>
-    </>
+    </Container>
   )
 }
 

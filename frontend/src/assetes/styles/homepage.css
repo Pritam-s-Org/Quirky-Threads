@@ -47,6 +47,13 @@
   border-radius: 10px;
 }
 
+@media (max-width: 576px) {
+  .half-banner {
+    height: 34vh;
+    padding: 20px;
+  }
+}
+
 .half-banner h4 {
   color: whitesmoke;
   font-size: 20px;
