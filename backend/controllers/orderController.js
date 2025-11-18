@@ -404,8 +404,8 @@ const generateBill = asyncHandler(async(req, res)=>{
 			res.send("Error while generating invoice");
 		}
 	} else {
-		res.status(401);
-		throw new Error("You are not authorized to view others bills.")
+		res.status(403);
+		throw new Error("You are not permission to view others bills.")
   }
 })
 

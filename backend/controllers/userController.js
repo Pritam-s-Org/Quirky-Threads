@@ -331,12 +331,12 @@ const wishlistProducts = asyncHandler( async(req, res)=>{
     }
 
     const alreadyWishlisted = user.wishlist.some(
-      (item) => item.toString() === selectedProductId
+      (item) => item._id.toString() === selectedProductId
     );
 
     if (alreadyWishlisted) {
       user.wishlist = user.wishlist.filter(
-        (item) => item.toString() !== selectedProductId
+        (item) => item._id.toString() !== selectedProductId
       );
     } else {
       user.wishlist.push(selectedProductId);
