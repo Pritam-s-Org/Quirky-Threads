@@ -103,3 +103,15 @@ table th {
   transform: translateY(-8px) scale(1.03);
   box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
+
+.product {
+  margin: 10%;
+  padding: 4%;
+}
+
+@media (max-width: 576px) {
+  .product {
+    margin: 4%;
+    padding: 4%;
+  }
+}

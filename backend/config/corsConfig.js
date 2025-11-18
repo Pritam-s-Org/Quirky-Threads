@@ -1,9 +1,9 @@
 const allowedOrigins = [
-  "http://localhost:3000",
-  "https://quirky-threads.onrender.com",
-  "https://quirky-threads.vercel.app",
   "https://quirky-threads.online",
-  "https://preprod.quirky-threads.online"
+  "https://preprod.quirky-threads.online",
+  "https://quirky-threads.onrender.com",
+  "https://quirky-threads.duckdns.org",
+  "http://localhost:3000",
 ];
 
 const corsOptions = {

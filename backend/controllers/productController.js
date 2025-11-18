@@ -5,7 +5,7 @@ import Product, { ProductView } from "../models/productModel.js";
 //@route  GET /api/products
 //@access Public
 const getPaginatedProducts = asyncHandler (async (req, res)=>{
-  const pageSize = 4;
+  const pageSize = Number(req.query.pageSize || 4);
   const page = Number(req.query.pageNumber);
   const keyword = req.query.keyword ? {
       $or: [
@@ -15,8 +15,11 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
     }
   : {};
 
-  const count = await Product.countDocuments({...keyword})
-  const products = await ProductView.find({...keyword}).limit(pageSize).skip(pageSize * (page - 1));
+  const count = await ProductView.countDocuments({...keyword})
+  const products = await ProductView.find({...keyword})
+    .limit(pageSize)
+    .skip(pageSize * (page - 1))
+    .select("-user -tags -description -reviews -createdAt -updatedAt");;
   
   res.json({products, page, pages: Math.ceil(count/pageSize)})
 })
@@ -26,7 +29,7 @@ const getPaginatedProducts = asyncHandler (async (req, res)=>{
 //@access Private/Admin
 const getAllProducts = asyncHandler(async (req, res) =>{
   try {
-    const allProducst = await ProductView.find({}).select("_id name price tags variants.variantName totalInStock");
+    const allProducst = await ProductView.find({}).select("_id name price tags variants.variantName totalInStock categories");
     res.status(200).json(allProducst)
   } catch (err) {
     res.status(400);
@@ -141,11 +144,35 @@ const getTopProducts = asyncHandler(async (req, res)=>{
 })
 
 //@desc   Fetch Product based on category
-//@route  GET /api/products/category/:category
+//@route  GET /api/products/category
 //@access Public
 const getCategorisedProducts = asyncHandler(async (req, res)=>{
-  const products = await Product.find({tags : req.params.category})
-  res.status(200).json(products)
+  const pageSize = 40;
+  const page = Number(req.query.pageNumber || 1);
+  try {
+    const count = await ProductView.countDocuments({"categories":  req.query.category})
+    const products = await ProductView.find({"categories":  req.query.category})
+      .limit(pageSize)
+      .skip(pageSize * (page - 1))
+      .select("-user -tags -description -reviews -createdAt -updatedAt");
+    
+    res.json({products, page, pages: Math.ceil(count/pageSize)})
+  } catch (err) {
+    res.status(404).json({message: "Couldn't find the category that you've asked for."})
+  }
 })
 
-export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts };
+//@desc   Fetch Product based on category
+//@route  GET /api/products/category
+//@access Public
+const getAllCategories = asyncHandler(async (req, res)=>{
+  try {
+    const categories = await ProductView.distinct("categories")
+    
+    res.status(200).json({categories})
+  } catch (err) {
+    res.status(404).json({message: "Couldn't find any category list that you've asked for."})
+  }
+})
+
+export { getPaginatedProducts, getAllProducts, getProductById, createProduct, updateProduct, deleteProduct, createProductReview, getTopProducts, getCategorisedProducts, getAllCategories };

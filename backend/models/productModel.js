@@ -37,36 +37,22 @@ const productSchema = new mongoose.Schema(
 		name: { type: String, required: true, trim: true, unique: true, maxlength: 60 },
 		brand: { type: String, required: true, default: "Quirky Threads" },
 		tags: { type: [String], required: true, default: ["unlisted"], maxlength: 15 },
+		categories: { type: [String], required: true, default: ["new"], maxlength: 5 },
 		description: { type: String, required: true, trim: true, maxlength: 200 },
-		variants: {type : [variantSchema], 
+		variants: {
+			type : [variantSchema], 
 			required: true, 
 			default: [{
 				variantName: "New Variant", 
 				images: ["/images/sample.jpg"], 
 				sizes: [{size: "M", stock: 0}]
 			}]
-		}, // Array of variants with colors and sizes
+		},
 		reviews: [reviewSchema],
-		rating: {
-			type: Number,
-			required: true,
-			default: 0,
-		},
-		numReviews: {
-			type: Number,
-			required: true,
-			default: 0,
-		},
-    totalInStock: {
-      type: Number,
-      required: true,
-      default: 0,
-    },
-		price: {
-			type: Number,
-			required: true,
-			default: 0,
-		},
+		rating: { type: Number, required: true, default: 0 },
+		numReviews: { type: Number, required: true, default: 0 },
+    totalInStock: { type: Number, required: true, default: 0},
+		price: { type: Number, required: true, default: 0 },
 	},
 	{ timestamps: true, }
 );

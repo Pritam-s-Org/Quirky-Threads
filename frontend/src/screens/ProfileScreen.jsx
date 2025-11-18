@@ -95,8 +95,8 @@ const ProfileScreen = () => {
     }
 
   return (
-    <Row>
-          <Meta title={`Quirky Threads | ${userInfo.name}`}/>
+    <Row className="px-4">
+      <Meta title={`Quirky Threads | ${userInfo.name}`}/>
       <Col md={3}>
         <h2>Profile</h2>
         <Form onSubmit={submitHandler}>

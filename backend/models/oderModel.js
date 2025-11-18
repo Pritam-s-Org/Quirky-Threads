@@ -72,6 +72,15 @@ const orderSchema = mongoose.Schema({
     required: true,
     default: false,
   },
+  invoiceGenerated: {
+    type: Boolean,
+    required: true,
+    default: false
+  },
+  invoiceDetails: {
+    invoiceNo: { type: String },
+    invoiceDate: { type: Date },
+  },
   paidAt: {type:Date},
   isDelivered:{
     type: Boolean,

@@ -133,7 +133,8 @@ const PlaceOrdersScreen = () => {
       <Col>
         <Row><Loader /></Row>
         <Row><h4>Please wait while we verifying your payment</h4></Row>
-      </Col> : (<Row>
+      </Col> : (
+				<Row className="px-4">
 				<Col md={8}>
 					<ListGroup>
 						<ListGroup.Item>

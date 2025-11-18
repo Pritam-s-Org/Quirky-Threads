@@ -24,6 +24,12 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "customer"
   },
+  wishlist:[
+    {
+      type: mongoose.Schema.Types.ObjectId,
+      ref: "Product"
+    }
+  ],
   lastLoggedIn: {
     type: Date,
     required: true,

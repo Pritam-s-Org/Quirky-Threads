@@ -29,19 +29,22 @@ import ProductListScreen from "./screens/admin/ProductListScreen";
 import ProductEditScreen from "./screens/admin/ProductEditScreen";
 import UserListScreen from "./screens/admin/UserListScreen";
 import UserEditScreen from "./screens/admin/UserEditScreen";
-import CategoryScreen from "./screens/CategoryScreen";
 import ForgotPassword from "./screens/ForgotPassword";
 import PreOrdered from "./screens/admin/manufacturer/PreOrdered";
+import SearchScreen from "./screens/SearchScreen";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route path="/" element={<App />}>
       <Route index={true} path="/" element={<HomeScreen />} />
-      <Route path="/search/:keyword" element={<HomeScreen />} />
-      <Route path="/page/:pageNumber" element={<HomeScreen />} />
-      <Route path="/search/:keyword/page/:pageNumber" element={<HomeScreen />} />
+      <Route path="/search/:keyword" element={<SearchScreen />} />
+      <Route path="/page/:pageNumber" element={<SearchScreen />} />
+      <Route path="/search/:keyword/page/:pageNumber" element={<SearchScreen />} />
+      <Route path="/category/:category" element={<SearchScreen />} />
+      <Route path="/page/:pageNumber" element={<SearchScreen />} />
+      <Route path="/category/:category/page/:pageNumber" element={<SearchScreen />} />
       <Route path="/product/:id" element={<ProductScreen />} />
-      <Route path="/category/:category" element={<CategoryScreen />} />
+      {/* <Route path="/category/:category" element={<CategoryScreen />} /> */}
       <Route path="/cart" element={<CartScreen />} />
       <Route path="/login" element={<LoginScreen />} />
       <Route path="/register" element={<RegisterScreen />} />
