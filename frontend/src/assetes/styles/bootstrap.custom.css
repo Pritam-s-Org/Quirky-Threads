@@ -757,6 +757,11 @@ progress {
   color: var(--bs-secondary-color);
 }
 
+nav > .container {
+  min-width: 96%;
+} 
+
+
 .container,
 .container-fluid,
 .container-xxl,

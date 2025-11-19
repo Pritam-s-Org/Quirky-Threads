@@ -330,13 +330,13 @@ const wishlistProducts = asyncHandler( async(req, res)=>{
       return res.status(400).json({ message: "Product ID is required" });
     }
 
-    const alreadyWishlisted = user.wishlist.some(
-      (item) => item._id.toString() === selectedProductId
+    const alreadyWishlisted = user.wishlist?.some(
+      (item) => item._id?.toString() === selectedProductId
     );
 
     if (alreadyWishlisted) {
-      user.wishlist = user.wishlist.filter(
-        (item) => item._id.toString() !== selectedProductId
+      user.wishlist = user.wishlist?.filter(
+        (item) => item._id?.toString() !== selectedProductId
       );
     } else {
       user.wishlist.push(selectedProductId);

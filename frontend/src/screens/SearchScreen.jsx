@@ -43,7 +43,7 @@ const SearchScreen = () => {
             </Col>
           ))}
         </Row>
-        <Paginate pages={(keywordData || categoryData).pages} page={(keywordData || categoryData).page || 1} keyword={keyword ? keyword : ""} category={category? category : ""} />
+        <Paginate pages={(keywordData || categoryData)?.pages} page={(keywordData || categoryData)?.page || 1} keyword={keyword ? keyword : ""} category={category? category : ""} />
       </>
       }
     </>

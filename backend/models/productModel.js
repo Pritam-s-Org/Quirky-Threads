@@ -51,7 +51,7 @@ const productSchema = new mongoose.Schema(
 		reviews: [reviewSchema],
 		rating: { type: Number, required: true, default: 0 },
 		numReviews: { type: Number, required: true, default: 0 },
-    totalInStock: { type: Number, required: true, default: 0},
+		totalInStock: { type: Number, required: true, default: 0},
 		price: { type: Number, required: true, default: 0 },
 	},
 	{ timestamps: true, }

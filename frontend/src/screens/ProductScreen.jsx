@@ -129,18 +129,19 @@ const ProductScreen = () => {
                   Color Variant:
                 </ListGroup.Item>
                 <ListGroup.Item>
-                  <Row className="my-2">
+                  <Row className="my-2 overflow-x-auto d-flex flex-nowrap">
                     {product.variants.map( variant =>
-                      <Row className="d-grid gap-2 col-4 mx-auto" key={variant._id}>
+                      <Col className="d-grid gap-2 col-4 mx-auto" key={variant._id}>
                         <Button 
                           style={{background : variant.variantName, color: getContrastTextColor(variant.variantName)}} 
                           onClick={()=>setSelectedVariant(variant)}
                           className={`${variant._id === selectedVariant?._id? "border-3 shadow-none" : "border-0 shadow"} text-truncate`}
                           disabled={variant._id === selectedVariant?._id}
+                          title={variant.variantName}
                         >
                           {variant._id === selectedVariant?._id ? (<b><u>{variant.variantName}</u></b>): (variant.variantName)}
                         </Button>
-                      </Row>
+                      </Col>
                     )}
                   </Row>
                 </ListGroup.Item>
