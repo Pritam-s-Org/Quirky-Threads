@@ -1,6 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { Modal, Form } from 'react-bootstrap';
-import Loader from "./Loader";
+import Loader from "../Loader";
 
 const VerifyOTPModal = ({ show, handleClose, handleVerify, isVerifying }) => {
   const otpLength = 6;

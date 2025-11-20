@@ -9,7 +9,7 @@ import Loader from "../components/Loader.jsx"
 import Meta from "../components/Meta.jsx"
 import { useRegisterMutation, useSendOtpMutation, useVerifyOtpMutation } from "../slicers/usersApiSlice.js"
 import { setCredentials } from "../slicers/authSlice.js"
-import VerifyOTPModal from "../components/VerifyOTPModal.jsx"
+import VerifyOTPModal from "../components/modals/VerifyOTPModal.jsx"
 
 const RegisterScreen = () => {
   const [name, setName] = useState("")

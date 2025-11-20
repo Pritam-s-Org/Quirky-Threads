@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { Col, Row } from "react-bootstrap";
+import { Col } from "react-bootstrap";
 import { Outlet } from "react-router-dom";
 import { ToastContainer } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
@@ -25,9 +25,9 @@ function App() {
     <Col>
       <Header />
       <main className="py-6">
-        <Row className="mx-0 px-0">
+        <Col className="mx-0 px-0">
           <Outlet />
-        </Row>
+        </Col>
       </main>
       <Footer />
       <ToastContainer />

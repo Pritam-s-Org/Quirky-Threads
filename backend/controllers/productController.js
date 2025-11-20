@@ -68,13 +68,14 @@ const createProduct = asyncHandler (async (req, res)=>{
 //@route  PUT /api/products
 //@access Private/Admin
 const updateProduct = asyncHandler (async (req, res)=>{
-  const { name, price, tags, description, variants } = req.body
+  const { name, price, tags, categories, description, variants } = req.body
   const product = await Product.findById(req.params.id)
 
   if (product) {
     product.name = name
     product.price = price
     product.tags = tags.split(",").map(tag => tag.trim()).filter(tag => tag.length > 0);
+    product.categories = categories
     product.description = description
     product.variants = variants
 

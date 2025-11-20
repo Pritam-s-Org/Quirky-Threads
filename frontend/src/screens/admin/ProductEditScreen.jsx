@@ -6,10 +6,11 @@ import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Meta from "../../components/Meta";
 import { toast } from "react-toastify";
-import { useUpdateAnyProductMutation, useGetProductDetailsQuery, useUploadProductImageMutation, useDeleteProductImageMutation } from "../../slicers/productApiSlice";
+import { useUpdateAnyProductMutation, useGetProductDetailsQuery, useUploadProductImageMutation, useDeleteProductImageMutation, useGetAllCategoriesQuery } from "../../slicers/productApiSlice";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import VariantModal from "../../components/VariantModal";
+import VariantModal from "../../components/modals/VariantModal";
 import { BASE_URL } from "../../constants";
+import CategoriesModal from "../../components/modals/CategoriesModal";
 
 const ProductEditScreen = () => {
 	const { id: productId } = useParams();
@@ -19,13 +20,17 @@ const ProductEditScreen = () => {
 	const [tags, setTags] = useState("");
 	const [description, setDescription] = useState("");
 	const [variants, setVariants] = useState([]);
-	const [showPopup, setShowPopup] = useState(false);
+	const [categories, setCategories] = useState([]);
+	const [categoryList, setCategoryList] = useState([]);
+	const [showVariantPopup, setVariantShowPopup] = useState(false);
+	const [showCategoryPopup, setShowCategoryPopup] = useState(false);
 	const [selectedVariant, setSelectedVariant] = useState(null);
 
 	const { data: product, isLoading, refetch, error } = useGetProductDetailsQuery(productId);
+	const { data: allCategories, isLoading: categoriesLoading, refetch: refetchCategories, error: categoriesError } = useGetAllCategoriesQuery()
 	const [updateAnyProduct, { isLoading: loadingUpdate }] = useUpdateAnyProductMutation();
 	const [uploadProductImage, { isLoading: loadingUpload }] = useUploadProductImageMutation();
-	const [deleteProductImage, { isLoading: loadingDelete}] = useDeleteProductImageMutation();
+	const [deleteProductImage, { isLoading: loadingDelete }] = useDeleteProductImageMutation();
 	const navigate = useNavigate();
 
 	useEffect(() => {
@@ -33,16 +38,21 @@ const ProductEditScreen = () => {
 			setName(product.name);
 			setPrice(product.price);
 			setTags(product.tags.toString());
+			setCategories(product.categories);
 			setDescription(product.description);
 			setVariants(product.variants);
 		}
 	}, [product, productId]);
 
+	useEffect(()=> {
+		setCategoryList(allCategories?.categories);
+	}, [allCategories])
+
 	const submitHandler = async (e) => {
 		e.preventDefault();
 
 		try {
-			await updateAnyProduct({ productId, name:name.trim(), price, tags, description:description.trim(), variants }).unwrap();
+			await updateAnyProduct({ productId, name: name.trim(), price, tags, categories, description: description.trim(), variants }).unwrap();
 			toast.success("Product updated");
 			refetch();
 			navigate("/admin/productlist");
@@ -60,11 +70,11 @@ const ProductEditScreen = () => {
 	const uploadFileHandler = async (e, index) => {
 		const formData = new FormData();
 		formData.append("image", e.target.files[0]);
-		
+
 		try {
 			const res = await uploadProductImage(formData).unwrap();
 			toast.success(`Server: ${res.message}`);
-      handleVariantValueUpdate(index, "images", [...(variants[index]?.images), res.imageUrl])
+			handleVariantValueUpdate(index, "images", [...(variants[index]?.images), res.imageUrl])
 		} catch (err) {
 			toast.error(err?.data?.message || err.error);
 		}
@@ -116,8 +126,8 @@ const ProductEditScreen = () => {
 		} catch (err) {
 			toast.error(err.error || err.data.message);
 		}
-	}	
-	
+	}
+
 	return (
 		<Container>
 			<Meta title={`Admin | ${name} | Quirky Threads`} />
@@ -179,6 +189,29 @@ const ProductEditScreen = () => {
 								}
 							/>
 						</Form.Group>
+						<Form.Group controlId="categories" className="my-3">
+							<Form.Label>Categories</Form.Label>
+							<Container>
+								<Col className="d-flex flex-wrap gap-2 my-3">
+									{categories?.map((cat, idx) => (
+										<span key={idx} className="badge bg-primary p-2">{cat}</span>
+									))}
+								</Col>
+								<Button onClick={() => setShowCategoryPopup(true)}>Manage Categories</Button>
+								{showCategoryPopup && !categoriesLoading && (
+									<CategoriesModal
+										show={showCategoryPopup}
+										categoryList={categoryList}
+										productCategories={categories}
+										setProductCategories={setCategories}
+										handleClose={() => setShowCategoryPopup(false)}
+										loadingHandle={categoriesLoading}
+										refetchHandle={refetchCategories}
+										errorHandle={categoriesError}
+									/>
+								)}
+							</Container>
+						</Form.Group>
 						<h4 className="mb-3">Product Variants{(loadingUpload || loadingDelete) && <Spinner animation="border" size="sm" />}</h4>
 						<Table hover responsive className="table-sm">
 							<thead>
@@ -200,7 +233,7 @@ const ProductEditScreen = () => {
 											<Form.Control
 												type="text"
 												value={variant.variantName}
-												onChange={(e) => handleVariantValueUpdate( index, "variantName", e.target.value.slice(0, 20))}
+												onChange={(e) => handleVariantValueUpdate(index, "variantName", e.target.value.slice(0, 20))}
 												className="mb-2"
 												placeholder="Enter Variant Color"
 											/>
@@ -240,32 +273,32 @@ const ProductEditScreen = () => {
 													disabled={loadingUpload}
 												/>
 												<Row>
-													{variant.images?.map((img, i)=>
-													<Col className="d-flex" key={i}>
-														<Image
-															key={img}
-															src={BASE_URL + img}
-															alt={variant.name}
-															title={variant.name}
-															rounded
-															style={{
-																border: "2px solid #a07d00ff",
-																margin: "0 1%",
-																width: "100px"
-															}}
-														/><p 
-															onClick={()=>handleDeleteImage(index, BASE_URL + img)}
-															style={{
-																cursor: "pointer",
-																height: "fit-content",
-																width: "1.6rem",
-																background: "white",
-																border: "1px solid black",
-																borderRadius: "50%",
-																marginLeft : "-17px",
-															}}><b>✕</b>
-														</p>
-													</Col>
+													{variant.images?.map((img, i) =>
+														<Col className="d-flex" key={i}>
+															<Image
+																key={img}
+																src={BASE_URL + img}
+																alt={variant.name}
+																title={variant.name}
+																rounded
+																style={{
+																	border: "2px solid #a07d00ff",
+																	margin: "0 1%",
+																	width: "100px"
+																}}
+															/><p
+																onClick={() => handleDeleteImage(index, BASE_URL + img)}
+																style={{
+																	cursor: "pointer",
+																	height: "fit-content",
+																	width: "1.6rem",
+																	background: "white",
+																	border: "1px solid black",
+																	borderRadius: "50%",
+																	marginLeft: "-17px",
+																}}><b>✕</b>
+															</p>
+														</Col>
 													)}
 												</Row>
 											</Form.Group>
@@ -275,7 +308,7 @@ const ProductEditScreen = () => {
 												<FaEdit
 													onClick={() => {
 														setSelectedVariant(variant);
-														setShowPopup(true);
+														setVariantShowPopup(true);
 													}}
 												/>
 											</Button>
@@ -296,10 +329,10 @@ const ProductEditScreen = () => {
 								))}
 							</tbody>
 						</Table>
-						{showPopup && selectedVariant && (
+						{showVariantPopup && selectedVariant && (
 							<VariantModal
-								show={showPopup}
-								handleClose={() => setShowPopup(false)}
+								show={showVariantPopup}
+								handleClose={() => setVariantShowPopup(false)}
 								variant={selectedVariant}
 								handleUpdate={handleUpdateVariant}
 							/>
@@ -310,7 +343,7 @@ const ProductEditScreen = () => {
 									variant="outline-success"
 									onClick={handleAddVariant}
 									className="my-2"
-									disabled={!product.variants[product.variants.length -1].variantName}
+									disabled={!product.variants[product.variants.length - 1].variantName}
 								>
 									Add Variant
 								</Button>
