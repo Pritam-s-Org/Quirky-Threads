@@ -1,7 +1,7 @@
 import React from "react";
 import { useState, useEffect } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
-import { Form, Button, Spinner, Table, Row, Col, Image, Container } from "react-bootstrap";
+import { Form, Button, Spinner, Table, Row, Col, Image, Container, Badge } from "react-bootstrap";
 import Message from "../../components/Message";
 import Loader from "../../components/Loader";
 import Meta from "../../components/Meta";
@@ -191,13 +191,15 @@ const ProductEditScreen = () => {
 						</Form.Group>
 						<Form.Group controlId="categories" className="my-3">
 							<Form.Label>Categories</Form.Label>
-							<Container>
-								<Col className="d-flex flex-wrap gap-2 my-3">
+							<Container className="d-flex justify-content-between flex-wrap">
+								<Col className="d-flex flex-wrap gap-2 my-3" xs={12} md={8} xxl={6}>
 									{categories?.map((cat, idx) => (
-										<span key={idx} className="badge bg-primary p-2">{cat}</span>
+										<Badge key={idx} className="badge p-2 bg-warning">{cat}</Badge>
 									))}
 								</Col>
-								<Button onClick={() => setShowCategoryPopup(true)}>Manage Categories</Button>
+								<Col xs={12} md={4} xxl={2}>
+									<Button onClick={() => setShowCategoryPopup(true)} variant="outline-warning"><b>Manage Categories</b></Button>
+								</Col>
 								{showCategoryPopup && !categoriesLoading && (
 									<CategoriesModal
 										show={showCategoryPopup}
