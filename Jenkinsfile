@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        APP_DIR = "/home/ubuntu/Quirky-Threads-preprod"
+        APP_DIR = "/var/www/Quirky-Threads-backend-preprod"
         PM2_APP = "Quirky-Threads-backend-preprod"
     }
 
