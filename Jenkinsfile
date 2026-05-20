@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     environment {
-        APP_DIR = "/home/ubuntu/Quirky-Threads"
-        PM2_APP = "Quirky-Threads-backend"
+        APP_DIR = "/home/ubuntu/Quirky-Threads-preprod"
+        PM2_APP = "Quirky-Threads-backend-preprod"
     }
 
     stages {
@@ -11,8 +11,10 @@ pipeline {
         stage('Clean Old App') {
             steps {
                 sh """
-                    mv ${APP_DIR} ${APP_DIR}-backup-$(date +%Y%m%d%H%M%S) || true
-                    rm -rf ${APP_DIR}
+                    if [ -d "${APP_DIR}" ]; then
+                        mv ${APP_DIR} ${APP_DIR}-backup-\$(date +%F-%T)
+                        rm -rf ${APP_DIR}
+                    fi
                     mkdir -p ${APP_DIR}
                 """
             }
@@ -38,8 +40,11 @@ pipeline {
         stage('Reload PM2') {
             steps {
                 sh """
-                    pm2 reload ${PM2_APP}
-                """
+                  if pm2 describe ${PM2_APP} > /dev/null 2>&1; then
+                      echo "PM2 app exists. Reloading..."
+                      pm2 reload ${PM2_APP}
+                  fi
+              """
             }
         }
     }
